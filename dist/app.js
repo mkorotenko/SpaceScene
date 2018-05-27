@@ -67,7 +67,7 @@ function init() {
     } );
     geometry = new THREE.SphereBufferGeometry(radius, 100, 50);
     meshPlanet = new THREE.Mesh(geometry, materialNormalMap);
-    meshPlanet.position.x = 7000;
+    meshPlanet.position.x = 8000;
     meshPlanet.rotation.y = 0;
     meshPlanet.rotation.z = tilt;
     scene.add(meshPlanet);
@@ -99,7 +99,7 @@ function init() {
     controls = new THREE.FlyControls( camera );
     controls.movementSpeed = 1;
     controls.domElement = renderer.domElement;
-    controls.rollSpeed = Math.PI / 6;
+    controls.rollSpeed = Math.PI / 3;
     controls.autoForward = false;
     controls.dragToLook = true;
 
