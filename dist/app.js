@@ -1,4 +1,6 @@
-var container, stats;
+//https://stemkoski.github.io/Three.js/CSG.html
+//https://stemkoski.github.io/Three.js/Mouse-Click.html
+//https://github.com/soulwire/WebGL-GPU-Particles/blob/master/source/shaders/physics.fs
 var camera, scene, renderer;
 var mouseX = 0, mouseY = 0;
 var windowHalfX = window.innerWidth / 2;
