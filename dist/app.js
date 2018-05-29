@@ -2,6 +2,8 @@
 //https://stemkoski.github.io/Three.js/Mouse-Click.html
 //https://github.com/soulwire/WebGL-GPU-Particles/blob/master/source/shaders/physics.fs
 //https://robertsspaceindustries.com/starmap?camera=10,0,0.05,0,0
+//http://skycraft.io/
+//http://stuffin.space/
 var camera, scene, renderer;
 var mouseX = 0, mouseY = 0;
 var windowHalfX = window.innerWidth / 2;
