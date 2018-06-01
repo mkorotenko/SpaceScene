@@ -25,13 +25,13 @@ function init() {
     container = document.createElement( 'div' );
     document.body.appendChild( container );
 
-    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.05, 1e7 );
+    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.0005, 1e7 );
     //camera.position.z = 5;
     camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
 
     // scene
     scene = new THREE.Scene();
-    //scene.background = new THREE.Color().setHSL( 0.6, 0, 1 );
+    scene.background = new THREE.Color().setHSL( 0.6, 0, 1 );
     // scene.fog = new THREE.Fog( scene.background, 1, 5000 );
 
     var ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
@@ -44,10 +44,11 @@ function init() {
     var loader = new THREE.ObjectLoader();
     loader.load(
         // resource URL
-        'models/model.json',
+        'models/sun.json',
     
         // onLoad callback
         function ( object ) {
+            // object.scale.multiplyScalar(100);
             scene.add( object );
         },
     
