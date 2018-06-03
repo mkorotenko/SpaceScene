@@ -9,7 +9,11 @@ const app = express();
 
 app.get('*.*', express.static(DIST_DIR))
 app.get('*', (req, res) => {
-    var stream = send(req, "/index.html", { root: path.join(DIST_DIR, req.path) });
+    var stream;
+    if (req.path === '/system.js')
+        stream = send(req, req.path, { root: path.join(__dirname, 'node_modules/systemjs/dist') });
+    else
+        stream = send(req, "/index.html", { root: path.join(DIST_DIR, req.path) });
     stream.pipe(res);
 })
 //app.use(cacheControl({ maxAge: 60} ));

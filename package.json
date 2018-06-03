@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.3",
-    "express-cache-controller": "^1.1.0"
+    "express-cache-controller": "^1.1.0",
+    "systemjs": "^0.21.4"
   }
 }

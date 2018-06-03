@@ -19282,5 +19282,36 @@
                 ]
             }
         ]
-    }
+    },
+    "images": [{
+        "uuid": "1E319E9E-A65E-4BBD-87AC-9CFAB9AA0F3B",
+        "url": "collada/sourceimages/01_Texture.jpg"
+    }],
+    "textures": [{
+        "image": "1E319E9E-A65E-4BBD-87AC-9CFAB9AA0F3B",
+        "uuid": "1E319E9E-A65E-4BBD-87AC-9CFAB9AA0F3B",
+        "name": "",
+        "sourceFile": "/rsi/static/js/starmap/sourceimages/suns/01_Texture.jpg",
+        "mipmaps": [],
+        "mapping": 300,
+        "wrapS": 1000,
+        "wrapT": 1000,
+        "magFilter": 1006,
+        "minFilter": 1008,
+        "anisotropy": 1,
+        "format": 1021,
+        "type": 1009,
+        "offset": {
+            "x": 0,
+            "y": 0
+        },
+        "repeat": {
+            "x": 1,
+            "y": 1
+        },
+        "generateMipmaps": true,
+        "premultiplyAlpha": false,
+        "flipY": true,
+        "unpackAlignment": 4
+    }]
 }

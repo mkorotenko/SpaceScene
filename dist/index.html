@@ -36,14 +36,26 @@
 	<script src="js/loaders/DDSLoader.js"></script>
 	<script src="js/loaders/MTLLoader.js"></script>
 	<script src="js/loaders/OBJLoader.js"></script>
-	<script src="js/loaders/ColladaLoader.js"></script>
+	<script src="js/loaders/customColladaLoader.js"></script>
+	<!-- <script src="js/loaders/add/MaterialLoader.js"></script> -->
 	<!-- <script src="js/controls/OrbitControls.js"></script> -->
 	<script src="js/controls/FlyControls.js"></script>
 	
 	<script src="js/Detector.js"></script>
 	<script src="js/libs/stats.min.js"></script>
 
-	<script src="app.js"></script>
-
+	<!-- <script src="app.js"></script> -->
+	<!-- <script src="scene.js"></script> -->
+	<script src = "system.js"></script>
+	<script>
+		// configure systemJS 
+		System.config({
+			meta: {
+				format: 'cjs'  //cjs refers to CommonJS format
+			}
+		});
+		
+		System.import('app.js');  //import systemJS
+	</script>
 </body>
 </html>

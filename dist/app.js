@@ -4,6 +4,9 @@
 //https://robertsspaceindustries.com/starmap?camera=10,0,0.05,0,0
 //http://skycraft.io/
 //http://stuffin.space/
+var sceneBuilder = require('./scene.js');
+var colladaProcessing = require('./js/libs/ColladaPostProcessing.js');
+
 var camera, scene, renderer;
 var mouseX = 0, mouseY = 0;
 var windowHalfX = window.innerWidth / 2;
@@ -29,10 +32,7 @@ function init() {
     //camera.position.z = 5;
     camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
 
-    // scene
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color().setHSL( 0.6, 0, 1 );
-    // scene.fog = new THREE.Fog( scene.background, 1, 5000 );
+    scene = sceneBuilder.scene();
 
     var ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
     scene.add( ambientLight );
@@ -41,27 +41,27 @@ function init() {
     camera.add( pointLight );
     scene.add( camera );
 
-    var loader = new THREE.ObjectLoader();
-    loader.load(
-        // resource URL
-        'models/sun.json',
+    // var loader = new THREE.ObjectLoader();
+    // loader.load(
+    //     // resource URL
+    //     'models/sun.json',
     
-        // onLoad callback
-        function ( object ) {
-            // object.scale.multiplyScalar(100);
-            scene.add( object );
-        },
+    //     // onLoad callback
+    //     function ( object ) {
+    //         // object.scale.multiplyScalar(100);
+    //         scene.add( object );
+    //     },
     
-        // onProgress callback
-        function ( xhr ) {
-            console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
-        },
+    //     // onProgress callback
+    //     function ( xhr ) {
+    //         console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+    //     },
     
-        // onError callback
-        function( err ) {
-            console.log( 'An error happened' );
-        }
-    );
+    //     // onError callback
+    //     function( err ) {
+    //         console.log( 'An error happened' );
+    //     }
+    // );
 
     // var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
     // hemiLight.color.setHSL( 0.6, 1, 0.6 );
@@ -136,15 +136,18 @@ function init() {
     // var nebula;
     // // loading manager
     // var loadingManager = new THREE.LoadingManager(function () {
-    //     nebula.scale.multiplyScalar(1000);
+    //     //nebula.scale.multiplyScalar();
     //     scene.add(nebula);
     // });
     // // collada
     // var loader = new THREE.ColladaLoader(loadingManager);
-    // loader.load('./models/collada/models/SpaceCube_Back.dae', function (collada) {
+    // loader.load('./models/collada/models/Middle_Nebula.dae', function (collada) {
     //     nebula = collada.scene;
     // });
-
+    (new THREE.ColladaLoader).load('./models/collada/models/Middle_Nebula.dae', function(collada) {
+        var n = makeColladaObject(collada.scene, collada.animations);
+        scene.add(n);
+    })
     // var elf;
     // // loading manager
     // var loadingManager = new THREE.LoadingManager(function () {
@@ -197,4 +200,18 @@ function render() {
 
     controls.update( delta );
     renderer.render( scene, camera );
+}
+
+var makeColladaObject = function(e, n) {
+    e.scale.x = e.scale.y = e.scale.z = 1;
+    // for (var a = [], s = 0; s < n.length; ++s) {
+    //     var l = n[s]
+    //       , c = new r["default"](l.node,l);
+    //     c.loop = !0,
+    //     a.push(c)
+    // }
+    return colladaProcessing.default.collapseMaterialsPerName(e),
+    colladaProcessing.default.convertMeshesWithThinlineMaterial(e),
+    colladaProcessing.default.convertIncludedAdditiveMaterial(e),
+    e
 }
