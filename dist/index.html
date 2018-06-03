@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>three.js webgl - OBJLoader + MTLLoader</title>
+	<title>WebGL Space Scene</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	<style>
@@ -31,7 +31,7 @@
 		<!-- <a href="http://threejs.org" target="_blank" rel="noopener">three.js</a> - OBJLoader + MTLLoader -->
 	</div>
 
-	<script src="../build/three.js"></script>
+	<script src="build/three.js"></script>
 
 	<script src="js/loaders/DDSLoader.js"></script>
 	<script src="js/loaders/MTLLoader.js"></script>
@@ -44,18 +44,14 @@
 	<script src="js/Detector.js"></script>
 	<script src="js/libs/stats.min.js"></script>
 
-	<!-- <script src="app.js"></script> -->
-	<!-- <script src="scene.js"></script> -->
 	<script src = "system.js"></script>
 	<script>
-		// configure systemJS 
 		System.config({
 			meta: {
 				format: 'cjs'  //cjs refers to CommonJS format
 			}
 		});
-		
-		System.import('app.js');  //import systemJS
+		System.import('js/app.js');  //import systemJS
 	</script>
 </body>
 </html>

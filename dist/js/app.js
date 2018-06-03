@@ -5,7 +5,7 @@
 //http://skycraft.io/
 //http://stuffin.space/
 var sceneBuilder = require('./scene.js');
-var colladaProcessing = require('./js/libs/ColladaPostProcessing.js');
+var colladaProcessing = require('./libs/ColladaPostProcessing.js');
 
 var camera, scene, renderer;
 var mouseX = 0, mouseY = 0;
