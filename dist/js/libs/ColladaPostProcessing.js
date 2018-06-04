@@ -1,4 +1,5 @@
-var i = function() {
+const n = require('./ShaderStore.js');
+const i = function() {
     function t() {}
     return t.replaceColorGradient = function(e, t, n, i, r, o, a) {
         for (var s = e.getAttribute("color"), l = s.length / 18, c = 0, u = 1 / (l + 1), h = t.clone(), d = s.array, f = 0; l > f; f++) {

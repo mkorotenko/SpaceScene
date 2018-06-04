@@ -5,7 +5,7 @@
 //http://skycraft.io/
 //http://stuffin.space/
 var sceneBuilder = require('./scene.js');
-var colladaProcessing = require('./libs/ColladaPostProcessing.js');
+var modelLoader = require('./modelLoader.js');
 
 var camera, scene, renderer;
 var mouseX = 0, mouseY = 0;
@@ -28,18 +28,18 @@ function init() {
     container = document.createElement( 'div' );
     document.body.appendChild( container );
 
+    scene = sceneBuilder.scene;
+
     camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.0005, 1e7 );
     //camera.position.z = 5;
     camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
-
-    scene = sceneBuilder.scene();
+    scene.add( camera );
 
     var ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
     scene.add( ambientLight );
 
     var pointLight = new THREE.PointLight( 0xffffff, 0.8 );
     camera.add( pointLight );
-    scene.add( camera );
 
     // var loader = new THREE.ObjectLoader();
     // loader.load(
@@ -140,14 +140,17 @@ function init() {
     //     scene.add(nebula);
     // });
     // // collada
+    console.info('modelLoader', modelLoader);
+    modelLoader.new('./models/collada/models/Middle_Nebula.dae')
+        .then(model=>console.info('new model', model));
     // var loader = new THREE.ColladaLoader(loadingManager);
     // loader.load('./models/collada/models/Middle_Nebula.dae', function (collada) {
     //     nebula = collada.scene;
     // });
-    (new THREE.ColladaLoader).load('./models/collada/models/Middle_Nebula.dae', function(collada) {
-        var n = makeColladaObject(collada.scene, collada.animations);
-        scene.add(n);
-    })
+    // (new THREE.ColladaLoader).load('./models/collada/models/Middle_Nebula.dae', function(collada) {
+    //     var n = makeColladaObject(collada.scene, collada.animations);
+    //     scene.add(n);
+    // })
     // var elf;
     // // loading manager
     // var loadingManager = new THREE.LoadingManager(function () {
@@ -167,7 +170,7 @@ function init() {
     container.appendChild( stats.dom );
 
     controls = new THREE.FlyControls( camera );
-    controls.movementSpeed = 1;
+    controls.movementSpeed = 0.1;
     controls.domElement = renderer.domElement;
     controls.rollSpeed = Math.PI / 3;
     controls.autoForward = false;
@@ -195,23 +198,8 @@ function animate() {
 
 function render() {
     var delta = clock.getDelta();
-    // meshPlanet.rotation.y += rotationSpeed * delta;
-    // meshClouds.rotation.y += 1.25 * rotationSpeed * delta;
 
+    sceneBuilder.mixers.forEach(mixer=>mixer.update( delta ));
     controls.update( delta );
     renderer.render( scene, camera );
-}
-
-var makeColladaObject = function(e, n) {
-    e.scale.x = e.scale.y = e.scale.z = 1;
-    // for (var a = [], s = 0; s < n.length; ++s) {
-    //     var l = n[s]
-    //       , c = new r["default"](l.node,l);
-    //     c.loop = !0,
-    //     a.push(c)
-    // }
-    return colladaProcessing.default.collapseMaterialsPerName(e),
-    colladaProcessing.default.convertMeshesWithThinlineMaterial(e),
-    colladaProcessing.default.convertIncludedAdditiveMaterial(e),
-    e
 }
