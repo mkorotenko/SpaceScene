@@ -32,7 +32,7 @@ function init() {
 
     camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.0005, 1e7 );
     //camera.position.z = 5;
-    camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
+    //camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
     scene.add( camera );
 
     var ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
@@ -133,34 +133,22 @@ function init() {
     // meshMoon.scale.set(moonScale, moonScale, moonScale);
     // scene.add(meshMoon);
     
-    // var nebula;
-    // // loading manager
-    // var loadingManager = new THREE.LoadingManager(function () {
-    //     //nebula.scale.multiplyScalar();
-    //     scene.add(nebula);
-    // });
-    // // collada
     console.info('modelLoader', modelLoader);
-    modelLoader.new('./models/collada/models/Middle_Nebula.dae')
-        .then(model=>console.info('new model', model));
-    // var loader = new THREE.ColladaLoader(loadingManager);
-    // loader.load('./models/collada/models/Middle_Nebula.dae', function (collada) {
-    //     nebula = collada.scene;
-    // });
-    // (new THREE.ColladaLoader).load('./models/collada/models/Middle_Nebula.dae', function(collada) {
-    //     var n = makeColladaObject(collada.scene, collada.animations);
-    //     scene.add(n);
-    // })
-    // var elf;
-    // // loading manager
-    // var loadingManager = new THREE.LoadingManager(function () {
-    //     scene.add(elf);
-    // });
-    // // collada
-    // var loader = new THREE.ColladaLoader(loadingManager);
-    // loader.load('./models/collada/elf/elf.dae', function (collada) {
-    //     elf = collada.scene;
-    // });
+    // modelLoader.new('./models/collada/models/Middle_Nebula.dae')
+    //     .then(model=>{
+    //         console.info('new model', model)
+    //     });
+    modelLoader.new('./models/collada/models/SpaceCube_Back.dae')
+        .then(model => model.addToScene())
+    modelLoader.new('./models/collada/models/PlanetRing.dae')
+        .then(model => model.addToScene())
+    modelLoader.new('./models/collada/models/Planet_Brown.dae')
+        .then(model => {
+            model.addToScene();
+            camera.position.z = 5;
+            camera.position.y = 5;
+            camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
+        })
 
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio( window.devicePixelRatio );
