@@ -140,8 +140,8 @@ function init() {
     // modelLoader.object('./models/obj/VoyagerNCC74656/voyager.obj')
     //     .then(model => model.addToScene());
 
-    camera.position.z = 5;
-    camera.position.y = 5;
+    camera.position.z = 1;
+    camera.position.y = 1;
     camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
 
     renderer = new THREE.WebGLRenderer();
@@ -168,6 +168,7 @@ function init() {
 
     window.saveCameraState = saveCameraState;
     window.readCameraState = readCameraState;
+    window.buildTree = buildTree;
 }
 
 function saveCameraState() {
@@ -178,6 +179,22 @@ function readCameraState() {
     const cam = localStorage.getItem('camera');
     if (cam)
         Object.assign(camera, JSON.parse(cam));
+}
+
+function buildTree(group) {
+    if (!group) return;
+    if (group.children && group.children.length) {
+        console.groupCollapsed(group.name, group.type, group)
+        if (group.material)
+            console.info('material', group.material);
+        group.children.forEach(gr => buildTree(gr));
+        console.groupEnd();
+    }
+    else {
+        console.info('name', group.name, group);
+        if (group.material)
+            console.info('material', group.material);
+    }
 }
 
 function onWindowResize() {
