@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>GPGPU Test</title>
+	<meta charset="utf-8">
+	<script src="js/gpgpu.js"></script>
+</head>
+	<script>
+		if (turbojs) {
+
+			var arraySize = 10e6;
+			var foo = turbojs.alloc(arraySize);
+			var nFactor = 4;
+
+			for (var i = 0; i < arraySize; i++) foo.data[i] = i;
+
+			console.time("GPU execution");
+			turbojs.run(foo, `void main(void) {
+				commit(sqrt(read()));
+			}`);
+			console.timeEnd("GPU execution");
+
+			console.time("CPU execution");
+			for (var i = 0; i < arraySize; i++) foo.data[i] = Math.sqrt(foo.data[i])
+			console.timeEnd("CPU execution");
+
+			console.log(foo.data.subarray(0, 5));
+		}
+	</script>
+<body>
+</body>
+</html>
