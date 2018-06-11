@@ -9,7 +9,7 @@ var sceneBuilder = require('./scene.js');
 var solarSystem = require('./solarSystem.js');
 var raycasterModule = require('./raycaster.js');
 
-var camera, scene, renderer, controls, raycaster;
+var camera, scene, renderer, controls;
 // var windowHalfX = window.innerWidth / 2;
 // var windowHalfY = window.innerHeight / 2;
 var stats = new Stats();
@@ -32,11 +32,21 @@ function init() {
 
     scene.add( new THREE.AmbientLight( 0xcccccc, 0.4 ) );
 
-    raycaster = new raycasterModule.raycaster(camera, undefined, 1);
+    const raycaster = new raycasterModule.Raycaster(camera, undefined, 1);
+    raycaster.onIntersects((intersects) => {
+        if (intersects.length > 0)
+            console.info('intersects', intersects);
+    }) 
+    document.addEventListener( 'click', 
+    ( event ) => {
+        event.preventDefault();
+        raycaster.vector.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        raycaster.vector.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+        raycaster.detectIntersects(true);
+    }, false );
 
     solarSystem.create().then(model => scene.add(raycaster.mesh=model));
     
-
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
@@ -53,7 +63,6 @@ function init() {
 
     window.addEventListener( 'resize', onWindowResize, false );
     //document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-    document.addEventListener( 'click', onDocumentClick, false );
 
     console.group();
     console.info('THREE', THREE);
@@ -64,6 +73,7 @@ function init() {
     window.saveCameraState = saveCameraState;
     window.readCameraState = readCameraState;
     window.buildTree = buildTree;
+    window.scene = scene;
 
     readCameraState();
 }
@@ -103,16 +113,6 @@ function buildTree(group) {
         if (group.material)
             console.info('material', group.material);
     }
-}
-
-function onDocumentClick( event ) {
-    event.preventDefault();
-    raycaster.vector.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    raycaster.vector.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-    const intersects = raycaster.intersects(true);
-    if (intersects.length > 0)
-        console.info('intersects', intersects);
-
 }
 
 function onWindowResize() {
