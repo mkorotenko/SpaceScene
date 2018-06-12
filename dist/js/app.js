@@ -28,9 +28,9 @@ function init() {
 
     scene.add( new THREE.AmbientLight( 0xcccccc, 0.4 ) );
 
-    const light = new THREE.PointLight( 0xffffff, 1.8 );
-    light.position.set(-0.00015217743389729112, 0.0013767499288792747, 0.0014427063671944287);
-    scene.add( light );
+    // const light = new THREE.PointLight( 0xffffff, 1.8 );
+    // light.position.set(-0.00015217743389729112, 0.0013767499288792747, 0.0014427063671944287);
+    // scene.add( light );
 
     solarSystem.create().then(model => scene.add(model));
     

@@ -23,11 +23,20 @@ var create = function() {
             getMeshes(models[0]).forEach(m => {
                 m.depthTest = true;
             })
+            models[0].name = 'Nebula group';
             models[0].scale.multiplyScalar(100000);
 
             const group = new THREE.Group();
             group.add(models[0]);
             group.add(models[1]);
+
+            const light = new THREE.PointLight( 0xffffff, 1.8 );
+            light.position.set(-0.00015217743389729112, 0.0013767499288792747, 0.0014427063671944287);
+            light.name = 'Sun light';
+            group.add( light );
+        
+            group.name = 'Solar system group';
+
             resolve(group);
         });
         
