@@ -3,7 +3,7 @@ var modelLoader = require('./modelLoader.js');
 var create = function() {
     return new Promise(function(resolve, reject) {
         const nebula = modelLoader.colladaGroup('./models/collada/models/Middle_Nebula.dae')
-        const solar = new Promise( resolve => (new THREE.ObjectLoader()).load('models/model.json', object => resolve(object)));
+        const solar = new Promise( resolve => (new THREE.ObjectLoader()).load('models/solarSystem.json', object => resolve(object)));
 
         Promise.all([nebula, solar]).then( models => {
             function getMeshes(group) {

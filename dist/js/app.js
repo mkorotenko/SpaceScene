@@ -7,8 +7,10 @@
 //https://github.com/schteppe/gpu-physics.js
 var sceneBuilder = require('./scene.js');
 var solarSystem = require('./solarSystem.js');
+var raycasterModule = require('./raycaster.js');
 
-var camera, scene, renderer, controls;
+var camera, scene, renderer, controls, raycaster;
+var meshes;
 // var windowHalfX = window.innerWidth / 2;
 // var windowHalfY = window.innerHeight / 2;
 var stats = new Stats();
@@ -24,19 +26,16 @@ function init() {
     scene = sceneBuilder.scene;
 
     camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.0005, 1e7 );
+    camera.position.z = 1;
+    camera.position.y = 1;
+    camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
     scene.add( camera );
 
     scene.add( new THREE.AmbientLight( 0xcccccc, 0.4 ) );
 
-    // const light = new THREE.PointLight( 0xffffff, 1.8 );
-    // light.position.set(-0.00015217743389729112, 0.0013767499288792747, 0.0014427063671944287);
-    // scene.add( light );
-
-    solarSystem.create().then(model => scene.add(model));
+    solarSystem.create().then(model => scene.add(meshes=model));
     
-    camera.position.z = 1;
-    camera.position.y = 1;
-    camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
+    raycaster = new raycasterModule.raycaster(camera);
 
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio( window.devicePixelRatio );
@@ -53,6 +52,8 @@ function init() {
     controls.dragToLook = true;
 
     window.addEventListener( 'resize', onWindowResize, false );
+    //document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+    document.addEventListener( 'click', onDocumentClick, false );
 
     console.group();
     console.info('THREE', THREE);
@@ -104,6 +105,17 @@ function buildTree(group) {
     }
 }
 
+function onDocumentClick( event ) {
+    event.preventDefault();
+    raycaster.vector.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    raycaster.vector.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    const intersects = raycaster.intersects(true);
+    raycaster.mesh = meshes;
+    if (intersects.length > 0)
+        console.info('intersects', intersects);
+
+}
+
 function onWindowResize() {
     // windowHalfX = window.innerWidth / 2;
     // windowHalfY = window.innerHeight / 2;
@@ -119,9 +131,10 @@ function animate() {
 }
 
 function render() {
-    var delta = clock.getDelta();
+    const delta = clock.getDelta();
 
     sceneBuilder.mixers.forEach(mixer=>mixer.update( delta ));
     controls.update( delta );
+
     renderer.render( scene, camera );
 }
