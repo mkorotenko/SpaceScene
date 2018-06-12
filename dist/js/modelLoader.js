@@ -39,6 +39,15 @@ const colladaLoader = function(path) {
     })
 }
 
+const colladaGroup = function(path) {
+    return new Promise(function(resolve, reject) {
+        (new THREE.ColladaLoader).load(path, function(collada) {
+            var group = convertToMesh(collada.scene);
+            resolve(group)
+        })
+    })
+}
+
 var onError = function ( xhr ) { };
 const objectLoader = function(path) {
     let fileNameIndex = path.lastIndexOf('/');
@@ -85,6 +94,7 @@ const convertToAnimation = function(n) {
 
 module.exports = {
     collada: colladaLoader,
+    colladaGroup: colladaGroup,
     object: objectLoader,
     models: models
 };

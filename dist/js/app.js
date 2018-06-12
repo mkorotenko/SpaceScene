@@ -6,21 +6,13 @@
 //http://stuffin.space/
 //https://github.com/schteppe/gpu-physics.js
 var sceneBuilder = require('./scene.js');
-var modelLoader = require('./modelLoader.js');
+var solarSystem = require('./solarSystem.js');
 
-var camera, scene, renderer;
-var mouseX = 0, mouseY = 0;
-var windowHalfX = window.innerWidth / 2;
-var windowHalfY = window.innerHeight / 2;
+var camera, scene, renderer, controls;
+// var windowHalfX = window.innerWidth / 2;
+// var windowHalfY = window.innerHeight / 2;
 var stats = new Stats();
-var controls;
 var clock = new THREE.Clock();
-var radius = 6371;
-var tilt = 0.41;
-var cloudsScale = 1.005;
-var moonScale = 0.23;
-var rotationSpeed = 0.02;
-var meshPlanet, meshClouds, meshMoon;
 
 init();
 animate();
@@ -36,111 +28,12 @@ function init() {
 
     scene.add( new THREE.AmbientLight( 0xcccccc, 0.4 ) );
 
-    camera.add( new THREE.PointLight( 0xffffff, 0.8 ) );
+    const light = new THREE.PointLight( 0xffffff, 1.8 );
+    light.position.set(-0.00015217743389729112, 0.0013767499288792747, 0.0014427063671944287);
+    scene.add( light );
 
-    var loader = new THREE.ObjectLoader();
-    loader.load(
-        // resource URL
-        'models/model.json',
+    solarSystem.create().then(model => scene.add(model));
     
-        // onLoad callback
-        function ( object ) {
-            //object.scale.multiplyScalar(1000);
-            scene.add( object );
-        },
-    
-        // onProgress callback
-        function ( xhr ) {
-            console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
-        },
-    
-        // onError callback
-        function( err ) {
-            console.log( 'An error happened' );
-        }
-    );
-
-    // var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
-    // hemiLight.color.setHSL( 0.6, 1, 0.6 );
-    // hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
-    // hemiLight.position.set( 0, 50, 0 );
-    // scene.add( hemiLight );
-    // var hemiLightHelper = new THREE.HemisphereLightHelper( hemiLight, 10 );
-    // scene.add( hemiLightHelper );
-
-    // var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.8 );
-    // directionalLight.position.set( 1, 1, 0 ).normalize();
-    // scene.add( directionalLight );
-
-    // //
-    // var textureLoader = new THREE.TextureLoader();
-    // // planet
-    // var materialNormalMap = new THREE.MeshPhongMaterial( {
-    //     specular: 0x333333,
-    //     shininess: 15,
-    //     map: textureLoader.load( "textures/planets/earth_atmos_2048.jpg" ),
-    //     specularMap: textureLoader.load( "textures/planets/earth_specular_2048.jpg" ),
-    //     normalMap: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ),
-    //     normalScale: new THREE.Vector2( 0.85, 0.85 )
-    // } );
-    // geometry = new THREE.SphereBufferGeometry(radius, 100, 50);
-    // meshPlanet = new THREE.Mesh(geometry, materialNormalMap);
-    // meshPlanet.position.x = 8000;
-    // meshPlanet.rotation.y = 0;
-    // meshPlanet.rotation.z = tilt;
-    // scene.add(meshPlanet);
-    // // clouds
-    // var materialClouds = new THREE.MeshLambertMaterial({
-    //     map: textureLoader.load("textures/planets/earth_clouds_1024.png"),
-    //     transparent: true
-    // });
-    // meshClouds = new THREE.Mesh( geometry, materialClouds );
-    // meshClouds.scale.set( cloudsScale, cloudsScale, cloudsScale );
-    // meshClouds.rotation.z = tilt;
-    // scene.add( meshClouds );
-    // // moon
-    // var materialMoon = new THREE.MeshPhongMaterial({
-    //     map: textureLoader.load("textures/planets/moon_1024.jpg")
-    // });
-    // meshMoon = new THREE.Mesh(geometry, materialMoon);
-    // meshMoon.position.set(radius * 5, 0, 0);
-    // meshMoon.scale.set(moonScale, moonScale, moonScale);
-    // scene.add(meshMoon);
-    
-    console.info('modelLoader', modelLoader);
-    modelLoader.collada('./models/collada/models/Middle_Nebula.dae')
-    //     .then(model=>{
-    //         console.info('new model', model)
-    //     });
-    //modelLoader.collada('./models/collada/models/SpaceCube_Back.dae')
-        .then(model => {
-            function getMeshes(group) {
-                var res = [];
-                function req(group1) {
-                    if (!group1 || !group1.children) return;
-                    group1.children.forEach(o => {
-                        if (o.material)
-                            res.push(o.material)
-                        else
-                            req(o)
-                    })
-                }
-                req(group);
-                return res;
-            }
-            getMeshes(model.mesh).forEach(m => {
-                m.depthTest = true;
-            })
-            model.mesh.scale.multiplyScalar(100000);
-            model.addToScene();
-        })
-    // modelLoader.collada('./models/collada/models/PlanetRing.dae')
-    //    .then(model => model.addToScene())
-    // modelLoader.collada('./models/collada/models/Planet_Brown.dae')
-    //    .then(model => model.addToScene())
-    // modelLoader.object('./models/obj/VoyagerNCC74656/voyager.obj')
-    //     .then(model => model.addToScene());
-
     camera.position.z = 1;
     camera.position.y = 1;
     camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
@@ -170,6 +63,8 @@ function init() {
     window.saveCameraState = saveCameraState;
     window.readCameraState = readCameraState;
     window.buildTree = buildTree;
+
+    readCameraState();
 }
 
 function saveCameraState() {
@@ -210,8 +105,8 @@ function buildTree(group) {
 }
 
 function onWindowResize() {
-    windowHalfX = window.innerWidth / 2;
-    windowHalfY = window.innerHeight / 2;
+    // windowHalfX = window.innerWidth / 2;
+    // windowHalfY = window.innerHeight / 2;
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize( window.innerWidth, window.innerHeight );
