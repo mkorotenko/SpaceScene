@@ -173,13 +173,24 @@ function init() {
 }
 
 function saveCameraState() {
-    localStorage.setItem('camera', JSON.stringify(camera.toJSON()));
+    const position = JSON.stringify(camera.position);
+    const rotation = JSON.stringify(camera.rotation);
+    localStorage.setItem('camera', JSON.stringify({
+        position: position,
+        rotation: rotation
+    }));
 }
 
 function readCameraState() {
-    const cam = localStorage.getItem('camera');
-    if (cam)
-        Object.assign(camera, JSON.parse(cam));
+    const set = localStorage.getItem('camera');
+    if (set) {
+        const settings = JSON.parse(set);
+        const position = JSON.parse(settings.position);
+        camera.position.set(position.x, position.y, position.z)
+        const rotation = JSON.parse(settings.rotation);
+        camera.rotation.set(rotation._x, rotation._y, rotation._z)
+    }
+        //Object.assign(camera, JSON.parse(cam));
 }
 
 function buildTree(group) {
