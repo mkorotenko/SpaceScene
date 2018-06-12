@@ -10,7 +10,6 @@ var solarSystem = require('./solarSystem.js');
 var raycasterModule = require('./raycaster.js');
 
 var camera, scene, renderer, controls, raycaster;
-var meshes;
 // var windowHalfX = window.innerWidth / 2;
 // var windowHalfY = window.innerHeight / 2;
 var stats = new Stats();
@@ -33,9 +32,10 @@ function init() {
 
     scene.add( new THREE.AmbientLight( 0xcccccc, 0.4 ) );
 
-    solarSystem.create().then(model => scene.add(meshes=model));
+    raycaster = new raycasterModule.raycaster(camera, undefined, 1);
+
+    solarSystem.create().then(model => scene.add(raycaster.mesh=model));
     
-    raycaster = new raycasterModule.raycaster(camera);
 
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio( window.devicePixelRatio );
@@ -110,7 +110,6 @@ function onDocumentClick( event ) {
     raycaster.vector.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     raycaster.vector.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
     const intersects = raycaster.intersects(true);
-    raycaster.mesh = meshes;
     if (intersects.length > 0)
         console.info('intersects', intersects);
 

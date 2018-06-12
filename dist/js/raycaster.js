@@ -3,8 +3,11 @@ const raycasterVector = function() {
     return new THREE.Vector2();
 }()
 
-function raycaster(camera, mesh) {
+function raycaster(camera, mesh, far) {
     this.raycaster = new THREE.Raycaster();
+    if (far)
+        this.raycaster.far = far;
+
     this.camera = camera;
     this.vector = new THREE.Vector2();
     this.mesh = mesh;
