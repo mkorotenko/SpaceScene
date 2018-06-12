@@ -4,6 +4,7 @@
 //https://robertsspaceindustries.com/starmap?camera=10,0,0.05,0,0
 //http://skycraft.io/
 //http://stuffin.space/
+//https://github.com/schteppe/gpu-physics.js
 var sceneBuilder = require('./scene.js');
 var modelLoader = require('./modelLoader.js');
 
