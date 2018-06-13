@@ -52,6 +52,7 @@ function init() {
     controls.dragToLook = true;
 
     window.addEventListener( 'keyup', () => camera.saveState(), false );
+    window.addEventListener( 'mouseup', () => camera.saveState(), false );
 
     console.info('CONTROL', controls);
 
