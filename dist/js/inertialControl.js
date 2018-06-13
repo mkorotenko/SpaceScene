@@ -1,6 +1,8 @@
+//const Queue = require('js/libs/queue.js');
+
 function InertialContol( object, domElement ) {
-    // THREE.FlyControls.apply(this, Array.prototype.slice.call(arguments));
-    // console.info('Inertial control', this);
+    //console.info('Queue', Queue);
+
 	this.object = object;
 
 	this.domElement = ( domElement !== undefined ) ? domElement : document;

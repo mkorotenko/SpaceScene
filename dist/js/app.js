@@ -53,55 +53,27 @@ function init() {
 
     console.info('CONTROL', controls);
 
-    window.saveCameraState = saveCameraState;
-    window.readCameraState = readCameraState;
-    window.buildTree = buildTree;
     window.scene = scene;
+    window.camera = camera;
 
-    readCameraState();
+    camera.readState();
 }
 
-function saveCameraState() {
-    const position = JSON.stringify(camera.position);
-    const rotation = JSON.stringify(camera.rotation);
-    localStorage.setItem('camera', `{"position":${ position },"rotation":${ rotation }}`);
-}
-
-function readCameraState() {
-    const set = localStorage.getItem('camera');
-    if (set) {
-        const settings = JSON.parse(set);
-        var position, rotation;
-
-        if (typeof settings.position === 'string')
-            position = JSON.parse(settings.position);
-        else
-            position = settings.position;
-        camera.position.set(position.x, position.y, position.z)
-
-        if (typeof settings.rotation === 'string')
-            rotation = JSON.parse(settings.rotation);
-        else
-            rotation = settings.rotation;
-        camera.rotation.set(rotation._x, rotation._y, rotation._z)
-    }
-}
-
-function buildTree(group) {
-    if (!group) return;
-    if (group.children && group.children.length) {
-        console.groupCollapsed(group.name, group.type, group)
-        if (group.material)
-            console.info('material', group.material);
-        group.children.forEach(gr => buildTree(gr));
-        console.groupEnd();
-    }
-    else {
-        console.info('name', group.name, group);
-        if (group.material)
-            console.info('material', group.material);
-    }
-}
+// function buildTree(group) {
+//     if (!group) return;
+//     if (group.children && group.children.length) {
+//         console.groupCollapsed(group.name, group.type, group)
+//         if (group.material)
+//             console.info('material', group.material);
+//         group.children.forEach(gr => buildTree(gr));
+//         console.groupEnd();
+//     }
+//     else {
+//         console.info('name', group.name, group);
+//         if (group.material)
+//             console.info('material', group.material);
+//     }
+// }
 
 function animate() {
     requestAnimationFrame( animate );
