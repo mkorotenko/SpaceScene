@@ -18,6 +18,10 @@ Raycaster.prototype.detectIntersects = function(recursive) {
     return intersects;
 }
 
+Raycaster.prototype.setVector = function(x, y) {
+    this.vector.set(x||0, y||0);
+}
+
 Raycaster.prototype.onIntersects = function(handler) {
     this.onDetect = handler;
 }

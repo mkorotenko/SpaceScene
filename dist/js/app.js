@@ -5,35 +5,27 @@
 //http://skycraft.io/
 //http://stuffin.space/
 //https://github.com/schteppe/gpu-physics.js
-const sceneBuilder = require('./scene.js');
-const solarSystem = require('./solarSystem.js');
-const raycasterModule = require('./raycaster.js');
-const controlModule = require('./inertialControl.js').default;
+const scene = require('./scene.js').scene;
+const camera = require('./camera.js').camera;
+const solarSystem = require('./solarSystem.js').create;
+const Raycaster = require('./raycaster.js').Raycaster;
+const InertialControl = require('./inertialControl.js').default;
 
-var camera, scene, renderer, controls;
-// var windowHalfX = window.innerWidth / 2;
-// var windowHalfY = window.innerHeight / 2;
+var controls;
 var stats = new Stats();
 var clock = new THREE.Clock();
 
 init();
 animate();
+
 function init() {
 
     container = document.createElement( 'div' );
     document.body.appendChild( container );
 
-    scene = sceneBuilder.scene;
-
-    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.0000001, 1e7 );
-    camera.position.z = 1;
-    camera.position.y = 1;
-    camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
-    scene.add( camera );
-
     scene.add( new THREE.AmbientLight( 0xcccccc, 0.4 ) );
 
-    const raycaster = new raycasterModule.Raycaster(camera, undefined, 1);
+    const raycaster = new Raycaster(camera, undefined, 1);
     raycaster.onIntersects((intersects) => {
         if (intersects.length > 0)
             console.info('intersects', intersects);
@@ -41,40 +33,25 @@ function init() {
     document.addEventListener( 'click', 
     ( event ) => {
         event.preventDefault();
-        raycaster.vector.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-        raycaster.vector.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-        raycaster.detectIntersects(true);
+        raycaster.setVector(( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1);
+        if (raycaster.mesh)
+            raycaster.detectIntersects(true);
     }, false );
 
-    solarSystem.create().then(model => scene.add(raycaster.mesh=model));
+    solarSystem().then(model => scene.add(raycaster.mesh = model));
     
-    renderer = new THREE.WebGLRenderer();
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    container.appendChild( renderer.domElement );
+    container.appendChild( scene.renderer.domElement );
 
     container.appendChild( stats.dom );
 
-    controls = new controlModule(camera);//new THREE.FlyControls( camera );
+    controls = new InertialControl(camera);
     controls.movementSpeed = 0.1;
-    controls.domElement = renderer.domElement;
+    controls.domElement = scene.renderer.domElement;
     controls.rollSpeed = Math.PI / 3;
     controls.autoForward = false;
     controls.dragToLook = true;
-    // const keyUp = controls.keyup;
-    // controls.keyup = (event) => {
-    //     keyUp.call(controls, event);
-    //     saveCameraState();
-    // }
 
-    window.addEventListener( 'resize', onWindowResize, false );
-    //document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-
-    console.group();
-    console.info('THREE', THREE);
-    console.info('scene', scene);
-    console.info('controls', controls);
-    console.groupEnd();
+    console.info('CONTROL', controls);
 
     window.saveCameraState = saveCameraState;
     window.readCameraState = readCameraState;
@@ -87,22 +64,27 @@ function init() {
 function saveCameraState() {
     const position = JSON.stringify(camera.position);
     const rotation = JSON.stringify(camera.rotation);
-    localStorage.setItem('camera', JSON.stringify({
-        position: position,
-        rotation: rotation
-    }));
+    localStorage.setItem('camera', `{"position":${ position },"rotation":${ rotation }}`);
 }
 
 function readCameraState() {
     const set = localStorage.getItem('camera');
     if (set) {
         const settings = JSON.parse(set);
-        const position = JSON.parse(settings.position);
+        var position, rotation;
+
+        if (typeof settings.position === 'string')
+            position = JSON.parse(settings.position);
+        else
+            position = settings.position;
         camera.position.set(position.x, position.y, position.z)
-        const rotation = JSON.parse(settings.rotation);
+
+        if (typeof settings.rotation === 'string')
+            rotation = JSON.parse(settings.rotation);
+        else
+            rotation = settings.rotation;
         camera.rotation.set(rotation._x, rotation._y, rotation._z)
     }
-        //Object.assign(camera, JSON.parse(cam));
 }
 
 function buildTree(group) {
@@ -121,25 +103,12 @@ function buildTree(group) {
     }
 }
 
-function onWindowResize() {
-    // windowHalfX = window.innerWidth / 2;
-    // windowHalfY = window.innerHeight / 2;
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize( window.innerWidth, window.innerHeight );
-}
-
 function animate() {
     requestAnimationFrame( animate );
-    render();
-    stats.update();
-}
 
-function render() {
     const delta = clock.getDelta();
 
-    sceneBuilder.mixers.forEach(mixer=>mixer.update( delta ));
     controls.update( delta );
-
-    renderer.render( scene, camera );
+    scene.renderTo(camera);
+    stats.update();
 }
