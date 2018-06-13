@@ -51,6 +51,8 @@ function init() {
     controls.autoForward = false;
     controls.dragToLook = true;
 
+    window.addEventListener( 'keyup', () => camera.saveState(), false );
+
     console.info('CONTROL', controls);
 
     window.scene = scene;
