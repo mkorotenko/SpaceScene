@@ -5,9 +5,10 @@
 //http://skycraft.io/
 //http://stuffin.space/
 //https://github.com/schteppe/gpu-physics.js
-var sceneBuilder = require('./scene.js');
-var solarSystem = require('./solarSystem.js');
-var raycasterModule = require('./raycaster.js');
+const sceneBuilder = require('./scene.js');
+const solarSystem = require('./solarSystem.js');
+const raycasterModule = require('./raycaster.js');
+const controlModule = require('./inertialControl.js').default;
 
 var camera, scene, renderer, controls;
 // var windowHalfX = window.innerWidth / 2;
@@ -24,7 +25,7 @@ function init() {
 
     scene = sceneBuilder.scene;
 
-    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.0005, 1e7 );
+    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.0000001, 1e7 );
     camera.position.z = 1;
     camera.position.y = 1;
     camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
@@ -54,12 +55,17 @@ function init() {
 
     container.appendChild( stats.dom );
 
-    controls = new THREE.FlyControls( camera );
+    controls = new controlModule(camera);//new THREE.FlyControls( camera );
     controls.movementSpeed = 0.1;
     controls.domElement = renderer.domElement;
     controls.rollSpeed = Math.PI / 3;
     controls.autoForward = false;
     controls.dragToLook = true;
+    // const keyUp = controls.keyup;
+    // controls.keyup = (event) => {
+    //     keyUp.call(controls, event);
+    //     saveCameraState();
+    // }
 
     window.addEventListener( 'resize', onWindowResize, false );
     //document.addEventListener( 'mousemove', onDocumentMouseMove, false );
