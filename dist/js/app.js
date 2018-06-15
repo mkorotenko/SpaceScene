@@ -5,6 +5,7 @@
 //http://skycraft.io/
 //http://stuffin.space/
 //https://github.com/schteppe/gpu-physics.js
+//Earth textures - https://visibleearth.nasa.gov/view.php?id=73934
 const scene = require('./scene.js').scene;
 const camera = require('./camera.js').camera;
 const solarSystem = require('./solarSystem.js').create;
