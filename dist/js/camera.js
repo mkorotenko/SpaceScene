@@ -30,15 +30,15 @@ function readState(storageName = 'camera') {
         const settings = JSON.parse(set);
         var position, rotation;
 
-        if (typeof settings.position === 'string')
-            position = JSON.parse(settings.position);
-        else
+        // if (typeof settings.position === 'string')
+        //     position = JSON.parse(settings.position);
+        // else
             position = settings.position;
         camera.position.set(position.x, position.y, position.z)
 
-        if (typeof settings.rotation === 'string')
-            rotation = JSON.parse(settings.rotation);
-        else
+        // if (typeof settings.rotation === 'string')
+        //     rotation = JSON.parse(settings.rotation);
+        // else
             rotation = settings.rotation;
         camera.rotation.set(rotation._x, rotation._y, rotation._z)
     }
