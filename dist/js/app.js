@@ -9,6 +9,7 @@
 //http://planetmaker.wthr.us/?# - atmosphere
 const scene = require('./scene.js').scene;
 const camera = require('./camera.js').camera;
+const nebula = require('./nebulaBox.js').create;
 const solarSystem = require('./solarSystem.js').create;
 const Raycaster = require('./raycaster.js').Raycaster;
 const InertialControl = require('./inertialControl.js').default;
@@ -25,7 +26,7 @@ function init() {
     container = document.createElement( 'div' );
     document.body.appendChild( container );
 
-    scene.add( new THREE.AmbientLight( 0xcccccc, 0.4 ) );
+    scene.add( new THREE.AmbientLight( 0xcccccc, 0.1 ) );
 
     const raycaster = new Raycaster(camera, undefined, 1);
     raycaster.onIntersects((intersects) => {
@@ -40,6 +41,7 @@ function init() {
             raycaster.detectIntersects(true);
     }, false );
 
+    nebula().then(model => scene.add(model))
     solarSystem().then(model => scene.add(raycaster.mesh = model));
     
     container.appendChild( scene.renderer.domElement );
