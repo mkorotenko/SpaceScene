@@ -11,7 +11,7 @@ var create = function() {
                     if (!group1 || !group1.children) return;
                     group1.children.forEach(o => {
                         if (o.material)
-                            res.push(o.material)
+                            res.push(o)
                         else
                             req(o)
                     })
@@ -20,7 +20,9 @@ var create = function() {
                 return res;
             }
             getMeshes(models[0]).forEach(m => {
-                m.depthTest = true;
+                //m.material.depthTest = true;
+                //m.material.transparent = false;
+                m.renderOrder = -1;
             })
             models[0].name = 'Nebula group';
             models[0].scale.multiplyScalar(100000);

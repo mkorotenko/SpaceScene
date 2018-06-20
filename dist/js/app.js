@@ -26,8 +26,6 @@ function init() {
     container = document.createElement( 'div' );
     document.body.appendChild( container );
 
-    scene.add( new THREE.AmbientLight( 0xcccccc, 0.1 ) );
-
     const raycaster = new Raycaster(camera, undefined, 1);
     raycaster.onIntersects((intersects) => {
         if (intersects.length > 0)
@@ -62,6 +60,7 @@ function init() {
 
     window.scene = scene;
     window.camera = camera;
+    window.get = get;
 
     camera.readState();
 }
@@ -81,6 +80,23 @@ function init() {
 //             console.info('material', group.material);
 //     }
 // }
+
+function get(name) {
+    const res = [];
+    if (!name)
+        return res;
+
+    const _name = name.toLocaleLowerCase();
+    function searchFor(children, name) {
+        children.forEach(c => {
+            if (c.name && c.name.toLocaleLowerCase().includes(name))
+                res.push(c);
+            searchFor(c.children, name);
+        })
+    }
+    searchFor(scene.children, _name)
+    return res;
+}
 
 function animate() {
     requestAnimationFrame( animate );

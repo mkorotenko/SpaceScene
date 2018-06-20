@@ -10,7 +10,8 @@ var create = function() {
             map: textureLoader.load( "textures/planets/earth_atmos_2048.jpg" ),
             specularMap: textureLoader.load( "textures/planets/earth_specular_2048.jpg" ),
             normalMap: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ),
-            normalScale: new THREE.Vector2( 0.85, 0.85 )
+            normalScale: new THREE.Vector2( 0.85, 0.85 ),
+            transparent: true //to resolve artifacts cause by transparent Nebula
         });
         var geometry = new THREE.IcosahedronBufferGeometry(0.2, 5);
         var earth = new THREE.Mesh(geometry, materialNormalMap);
@@ -19,6 +20,7 @@ var create = function() {
         var l = ((Math.PI*2)/c)*30
         var g = (Math.PI/180)*23.5
         var earthGroup = new THREE.Group();
+        earthGroup.name = 'Earth group';
         earthGroup.add(earth);
         earthGroup.position.x = 1;
         earthGroup.rotation.z = g;
@@ -32,14 +34,15 @@ var create = function() {
         Promise.all([solar]).then( models => {
 
             const group = new THREE.Group();
-            group.add(models[0]);
-            group.add(earthGroup);
-
-            const light = new THREE.PointLight( 0xffffff, 1.8 );
+            group.add( new THREE.AmbientLight( 0xcccccc, 0.03 ) );
+            const light = new THREE.PointLight( 0xffffff, 1.4 );
             light.position.set(-0.00015217743389729112, 0.0013767499288792747, 0.0014427063671944287);
             light.name = 'Sun light';
             group.add( light );
         
+            //group.add(models[0]);
+            group.add(earthGroup);
+
             group.name = 'Solar system group';
 
             resolve(group);
