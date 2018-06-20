@@ -13,7 +13,6 @@
   "dependencies": {
     "express": "^4.16.3",
     "express-cache-controller": "^1.1.0",
-    "queue": "^4.4.2",
     "systemjs": "^0.21.4"
   }
 }
