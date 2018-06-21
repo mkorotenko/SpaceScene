@@ -107,3 +107,17 @@ function animate() {
     scene.renderTo(camera);
     stats.update();
 }
+
+//exports = {}
+//module = {}
+// function jsLoader(jspath, callback) {
+//     var headTag = document.getElementsByTagName("head")[0];
+//     var jqTag = document.createElement('script');
+//     jqTag.type = 'text/javascript';
+//     jqTag.src = jspath;
+//     jqTag.onload = callback;
+//     headTag.appendChild(jqTag);
+// }
+//jsLoader('https://cdnjs.cloudflare.com/ajax/libs/three.js/93/three.js', function() {
+//  console.info('js loaded', arguments)
+//})

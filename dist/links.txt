@@ -3,3 +3,5 @@ http://forasoft.github.io/webgl-babylonjs-p2/
 https://github.com/zivaaa/bjs-tutorial/blob/master/web/p7.html
 https://www.solarsystemscope.com/textures/ - hi-res textures
 http://www.pheelicks.com/2014/03/rendering-large-terrains/ - LOD terrain
+https://thebookofshaders.com/13/ - shader editors
+https://mrdoob.com/lab/javascript/webgl/clouds/ - shader clouds
