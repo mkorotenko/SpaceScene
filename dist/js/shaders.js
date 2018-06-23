@@ -1,41 +1,46 @@
 module.exports = {
     vs: `
-        varying vec2 vUv;
-        varying vec3 vNormal;
+    precision highp float;
 
-        void main() {
-        vUv = uv;
-        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-        vNormal = normalMatrix * normal;
-        gl_Position = projectionMatrix * mvPosition;
+    // Varying
+    varying vec2 vUV;
+    varying vec3 vPositionW;
+    varying vec3 vNormalW;
+
+    void main(void) {
+        vec4 outPosition = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        gl_Position = outPosition;
+        vPositionW = vec3(modelMatrix * vec4(position, 1.0));
+        vNormalW = normalize(vec3(modelMatrix * vec4(normal, 0.0)));
+        vUV = uv;
     }
     `,
     fs: `
-        uniform sampler2D dayTexture;
-        uniform sampler2D nightTexture;
-        
-        uniform vec3 sunDirection;
-        
-        varying vec2 vUv;
-        varying vec3 vNormal;
-        
-        void main( void ) {
-            vec3 dayColor = texture2D( dayTexture, vUv ).rgb;
-            vec3 nightColor = texture2D( nightTexture, vUv ).rgb;
-            
-            // compute cosine sun to normal so -1 is away from sun and +1 is toward sun.
-            float cosineAngleSunToNormal = dot(normalize(vNormal), sunDirection);
-            
-            // sharpen the edge beween the transition
-            cosineAngleSunToNormal = clamp( cosineAngleSunToNormal * 10.0, -1.0, 1.0);
-            
-            // convert to 0 to 1 for mixing
-            float mixAmount = cosineAngleSunToNormal * 0.5 + 0.5;
-            
-            // Select day or night texture based on mix.
-            vec3 color = mix( nightColor, dayColor, mixAmount );
-            
-            gl_FragColor = vec4( color, 1.0 );
-        }
+    precision highp float;
+
+    // Varying
+    varying vec2 vUV;
+    varying vec3 vPositionW;
+    varying vec3 vNormalW;
+    
+    // Refs
+    uniform vec3 lightPosition;
+    uniform sampler2D diffuseTexture;
+    uniform sampler2D nightTexture;
+    
+    void main(void) {
+        vec3 direction = lightPosition - vPositionW;
+        vec3 lightVectorW = normalize(direction);
+    
+        // diffuse
+        float lightDiffuse = max(0.05, dot(vNormalW, lightVectorW));
+    
+        vec3 color;
+        vec4 nightColor = texture2D(nightTexture, vUV).rgba;
+        vec3 diffuseColor = texture2D(diffuseTexture, vUV).rgb;
+    
+        color = diffuseColor * lightDiffuse + (nightColor.rgb * nightColor.a * pow((1.0 - lightDiffuse), 6.0));
+        gl_FragColor = vec4(color, 1.0);
+    }
     `,
 }

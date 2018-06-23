@@ -16,9 +16,14 @@ var create = function() {
             transparent: true //to resolve artifacts cause by transparent Nebula
         });
 
+        const sunPosition = {
+            x: -0.00015217743389729112, 
+            y: 0.0013767499288792747, 
+            z: 0.0014427063671944287,
+        };
         const uniforms = {
-            sunDirection: {value: new THREE.Vector3(1,0,0) },
-            dayTexture: { value: textureLoader.load( "textures/planets/8k_earth_daymap.jpg" ) },
+            vLightPosition: {value: new THREE.Vector3(sunPosition.x,sunPosition.y,sunPosition.z) },
+            diffuseTexture: { value: textureLoader.load( "textures/planets/8k_earth_daymap.jpg" ) },
             nightTexture: { value: textureLoader.load( "textures/planets/earth-night-o2.png" ) }
           };
         const material = new THREE.ShaderMaterial({
@@ -49,7 +54,7 @@ var create = function() {
             const group = new THREE.Group();
             group.add( new THREE.AmbientLight( 0xcccccc, 0.03 ) );
             const light = new THREE.PointLight( 0xffffff, 1.4 );
-            light.position.set(-0.00015217743389729112, 0.0013767499288792747, 0.0014427063671944287);
+            light.position.set(sunPosition.x,sunPosition.y,sunPosition.z);
             light.name = 'Sun light';
             group.add( light );
         
