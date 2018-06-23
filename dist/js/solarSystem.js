@@ -1,20 +1,33 @@
+var shaders = require('./shaders.js');
 var create = function() {
     return new Promise(function(resolve, reject) {
         const solar = new Promise( resolve => (new THREE.ObjectLoader()).load('models/solarSystem.json', object => resolve(object)));
 
         var textureLoader = new THREE.TextureLoader();
         // planet
-        var materialNormalMap = new THREE.MeshPhongMaterial( {
+        var materialNormal = new THREE.MeshPhongMaterial( {
             specular: 0x333333,
             shininess: 15,
             map: textureLoader.load( "textures/planets/8k_earth_daymap.jpg" ),
             specularMap: textureLoader.load( "textures/planets/earth_specular_2048.jpg" ),
             normalMap: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ),
             normalScale: new THREE.Vector2( 0.85, 0.85 ),
+            emissiveMap: textureLoader.load( "textures/planets/earth-night-o2.png" ),
             transparent: true //to resolve artifacts cause by transparent Nebula
         });
+
+        const uniforms = {
+            sunDirection: {value: new THREE.Vector3(1,0,0) },
+            dayTexture: { value: textureLoader.load( "textures/planets/8k_earth_daymap.jpg" ) },
+            nightTexture: { value: textureLoader.load( "textures/planets/earth-night-o2.png" ) }
+          };
+        const material = new THREE.ShaderMaterial({
+            uniforms: uniforms,
+            vertexShader: shaders.vs,
+            fragmentShader: shaders.fs,
+          });
         var geometry = new THREE.IcosahedronBufferGeometry(0.2, 5);
-        var earth = new THREE.Mesh(geometry, materialNormalMap);
+        var earth = new THREE.Mesh(geometry, material);
 
         var c = 24*60*60*1000
         var l = ((Math.PI*2)/c)*30
