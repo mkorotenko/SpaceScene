@@ -8,8 +8,7 @@ module.exports = {
     varying vec3 vNormalW;
 
     void main(void) {
-        vec4 outPosition = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        gl_Position = outPosition;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         vPositionW = vec3(modelMatrix * vec4(position, 1.0));
         vNormalW = normalize(vec3(modelMatrix * vec4(normal, 0.0)));
         vUV = uv;

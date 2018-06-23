@@ -30,6 +30,7 @@ var create = function() {
             uniforms: uniforms,
             vertexShader: shaders.vs,
             fragmentShader: shaders.fs,
+            transparent: true
           });
         var geometry = new THREE.IcosahedronBufferGeometry(0.2, 5);
         var earth = new THREE.Mesh(geometry, material);

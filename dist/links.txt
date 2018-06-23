@@ -5,3 +5,4 @@ https://www.solarsystemscope.com/textures/ - hi-res textures
 http://www.pheelicks.com/2014/03/rendering-large-terrains/ - LOD terrain
 https://thebookofshaders.com/13/ - shader editors
 https://mrdoob.com/lab/javascript/webgl/clouds/ - shader clouds
+http://apoorvaj.io/exploring-bump-mapping-with-webgl.html
