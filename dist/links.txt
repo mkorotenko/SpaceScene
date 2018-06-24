@@ -6,3 +6,5 @@ http://www.pheelicks.com/2014/03/rendering-large-terrains/ - LOD terrain
 https://thebookofshaders.com/13/ - shader editors
 https://mrdoob.com/lab/javascript/webgl/clouds/ - shader clouds
 http://apoorvaj.io/exploring-bump-mapping-with-webgl.html
+http://voxelent.com/html/beginners-guide/chapter_10/ch10_NormalMap.html
+http://learnwebgl.brown37.net/09_lights/lights_combined.html - Combining Ambient, Diffuse, and Specular Lighting

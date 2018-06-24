@@ -34,7 +34,7 @@ module.exports = {
         vec3 lightVectorW = normalize(direction);
     
         // diffuse
-        float lightDiffuse = clamp(dot(vNormalW, lightVectorW),0.02,1.0);
+        float lightDiffuse = clamp(dot(vNormalW, lightVectorW),0.015,1.0);
     
         vec3 color;
         vec4 nightColor = texture2D(nightTexture, vUV).rgba;
