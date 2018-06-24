@@ -28,19 +28,24 @@ module.exports = {
     uniform vec3 lightPosition;
     uniform sampler2D diffuseTexture;
     uniform sampler2D nightTexture;
+    uniform sampler2D normalTexture;
     
     void main(void) {
         vec3 direction = lightPosition - vPositionW;
         vec3 lightVectorW = normalize(direction);
     
+        vec3 normal = 2.0 * texture2D (normalTexture, vUV).rgb - 1.0;
+        normal = normalize (normal);
+
         // diffuse
         float lightDiffuse = clamp(dot(vNormalW, lightVectorW),0.015,1.0);
+        float shininess = clamp(dot(normal, lightVectorW),0.01,1.0);
     
         vec3 color;
         vec4 nightColor = texture2D(nightTexture, vUV).rgba;
         vec3 diffuseColor = texture2D(diffuseTexture, vUV).rgb;
     
-        color = diffuseColor * lightDiffuse + (nightColor.rgb * nightColor.a * pow((1.0 - lightDiffuse), 6.0));
+        color = (1.0-shininess) * diffuseColor * lightDiffuse + (nightColor.rgb * nightColor.a * pow((1.0 - lightDiffuse), 6.0));
         gl_FragColor = vec4(color, 1.0);
     }
     `,

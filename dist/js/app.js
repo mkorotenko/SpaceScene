@@ -1,12 +1,4 @@
-//https://stemkoski.github.io/Three.js/CSG.html
-//https://stemkoski.github.io/Three.js/Mouse-Click.html
-//https://github.com/soulwire/WebGL-GPU-Particles/blob/master/source/shaders/physics.fs
-//https://robertsspaceindustries.com/starmap?camera=10,0,0.05,0,0
-//http://skycraft.io/
-//http://stuffin.space/
-//https://github.com/schteppe/gpu-physics.js
-//Earth textures - https://visibleearth.nasa.gov/view.php?id=73934
-//http://planetmaker.wthr.us/?# - atmosphere
+
 const scene = require('./scene.js').scene;
 const camera = require('./camera.js').camera;
 const nebula = require('./nebulaBox.js').create;
