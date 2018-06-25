@@ -5,6 +5,9 @@
 // "uniform mat4 viewMatrix;",
 // "uniform mat3 normalMatrix;",
 // "uniform vec3 cameraPosition;",
+//attribute vec3 position;
+//attribute vec3 normal;
+//attribute vec2 uv;
 //http://www.mathematik.uni-marburg.de/~thormae/lectures/graphics1/code/WebGLShaderLightMat/ShaderLightMat.html
 module.exports = {
     vs: `
@@ -29,7 +32,7 @@ module.exports = {
         
         vec4 vertPos4 = modelViewMatrix * position4;
         vertPos = vec3(vertPos4) / vertPos4.w;
-        //normalInterp = vec3(1);//vNormalW;//vec3(vec4(normalMatrix,0.0) * vec4(position, 0.0));
+        normalInterp = vNormalW;//normal * position;
     }
     `,
 // In the fragment shader
@@ -66,11 +69,11 @@ module.exports = {
         float shininess = clamp(dot(normal, lightVectorW),0.01,1.0);
         float specular = 0.0;
 
-        //vec3 normal1 = normalize(normalInterp);
+        vec3 normal1 = normalize(normalInterp);
         vec3 viewDir = normalize(-vertPos);
         // this is blinn phong
         vec3 halfDir = normalize(lightVectorW + viewDir);
-        float specAngle = max(dot(halfDir, normal), 0.0);
+        float specAngle = max(dot(halfDir, normal1), 0.0);
         specular = pow(specAngle, 16.0);
 
         vec3 color;

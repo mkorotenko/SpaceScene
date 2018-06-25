@@ -12,7 +12,7 @@ var create = function() {
             specularMap: textureLoader.load( "textures/planets/earth_specular_2048.jpg" ),
             normalMap: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ),
             normalScale: new THREE.Vector2( 0.85, 0.85 ),
-            emissiveMap: textureLoader.load( "textures/planets/earth-night-o2.png" ),
+            //emissiveMap: textureLoader.load( "textures/planets/earth-night-o2.png" ),
             transparent: true //to resolve artifacts cause by transparent Nebula
         });
 
@@ -27,12 +27,18 @@ var create = function() {
             nightTexture: { value: textureLoader.load( "textures/planets/earth-night-o2.png" ) },
             normalTexture: { value: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ) }
           };
-        const material = new THREE.ShaderMaterial({
-            uniforms: uniforms,
-            vertexShader: shaders.vs,
-            fragmentShader: shaders.fs,
-            transparent: true
-          });
+         const material = new THREE.ShaderMaterial({
+             uniforms: uniforms,
+             vertexShader: shaders.vs,
+             fragmentShader: shaders.fs,
+             transparent: true
+           });
+        // [.Offscreen-For-WebGL-0638A120]GL ERROR :GL_OUT_OF_MEMORY : glFramebufferTexture2D: <- error from previous GL command
+        // 65[.Offscreen-For-WebGL-0638A120]GL ERROR :GL_OUT_OF_MEMORY : glFramebufferTexture2D: 
+        // 7[.Offscreen-For-WebGL-0638A120]GL ERROR :GL_INVALID_FRAMEBUFFER_OPERATION : glClear: framebuffer incomplete (check)
+        // 119[.Offscreen-For-WebGL-0638A120]GL ERROR :GL_INVALID_FRAMEBUFFER_OPERATION : glDrawArrays: framebuffer incomplete (check)
+        // (index):1 WebGL: too many errors, no more errors will be reported to the console for this context.
+
         var geometry = new THREE.IcosahedronBufferGeometry(0.2, 5);
         var earth = new THREE.Mesh(geometry, material);
 
