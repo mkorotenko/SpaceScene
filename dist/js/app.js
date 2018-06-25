@@ -31,7 +31,10 @@ function init() {
             raycaster.detectIntersects(true);
     }, false );
 
-    nebula().then(model => scene.add(model))
+    nebula().then(model => {
+        scene.add(model);
+        get('nebula', '3d').forEach(n => n.visible = false);
+    })
     solarSystem().then(model => scene.add(raycaster.mesh = model));
     
     container.appendChild( scene.renderer.domElement );
@@ -73,15 +76,16 @@ function init() {
 //     }
 // }
 
-function get(name) {
+function get(name, type) {
     const res = [];
+    const _type = (type || '').toLocaleLowerCase();
     if (!name)
         return res;
 
     const _name = name.toLocaleLowerCase();
     function searchFor(children, name) {
         children.forEach(c => {
-            if (c.name && c.name.toLocaleLowerCase().includes(name))
+            if (c.name && c.name.toLocaleLowerCase().includes(name) && (!_type || (_type && c.type && c.type.toLocaleLowerCase().includes(_type))))
                 res.push(c);
             searchFor(c.children, name);
         })

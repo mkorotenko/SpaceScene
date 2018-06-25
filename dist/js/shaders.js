@@ -1,12 +1,12 @@
 //In the vertex shader
-// "uniform mat4 modelMatrix;",
-// "uniform mat4 modelViewMatrix;",
-// "uniform mat4 projectionMatrix;",
-// "uniform mat4 viewMatrix;",
+// "uniform mat4 modelMatrix;",//uNormalMatrix
+// "uniform mat4 modelViewMatrix;",//uMVMatrix
+// "uniform mat4 projectionMatrix;",//uPMatrix
+// "uniform mat4 viewMatrix;",//uVMatrix
 // "uniform mat3 normalMatrix;",
 // "uniform vec3 cameraPosition;",
-//attribute vec3 position;
-//attribute vec3 normal;
+//attribute vec3 position;//vPos
+//attribute vec3 normal;//normals
 //attribute vec2 uv;
 //http://www.mathematik.uni-marburg.de/~thormae/lectures/graphics1/code/WebGLShaderLightMat/ShaderLightMat.html
 module.exports = {
@@ -22,6 +22,9 @@ module.exports = {
     varying vec3 normalInterp;
     varying vec3 vertPos;
 
+    varying vec3 vLightWeighting;
+    uniform vec3 lightPosition;
+
     void main(void) {
 
         vec4 position4 = vec4(position, 1.0);
@@ -30,9 +33,17 @@ module.exports = {
         vNormalW = normalize(vec3(modelMatrix * vec4(normal, 0.0)));
         vUV = uv;
         
-        vec4 vertPos4 = modelViewMatrix * position4;
-        vertPos = vec3(vertPos4) / vertPos4.w;
-        normalInterp = vNormalW;//normal * position;
+        //vec4 vertPos4 = modelViewMatrix * position4;
+        //vertPos = vec3(vertPos4) / vertPos4.w;
+        //normalInterp = normal * normalMatrix;
+
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        vec4 lPos = modelViewMatrix * vec4(lightPosition,1.0);
+        vec3 lightDirection = normalize(lPos.xyz - mvPosition.xyz);
+        vec3 transformedNormal = normalize(vec3(modelMatrix * vec4(normal, 0.0)));
+        float directionalLightWeighting = max(dot(transformedNormal, lightDirection), 0.0);
+        vLightWeighting = vec3(0.6, 0.6, 0.6) + vec3(1.0, 1.0, 1.0) * directionalLightWeighting;
+
     }
     `,
 // In the fragment shader
@@ -47,8 +58,9 @@ module.exports = {
     varying vec3 vPositionW;
     varying vec3 vNormalW;
 
-    varying vec3 normalInterp;
-    varying vec3 vertPos;
+    //varying vec3 normalInterp;
+    //varying vec3 vertPos;
+    varying vec3 vLightWeighting;
     
     // Refs
     uniform vec3 lightPosition;
@@ -69,18 +81,18 @@ module.exports = {
         float shininess = clamp(dot(normal, lightVectorW),0.01,1.0);
         float specular = 0.0;
 
-        vec3 normal1 = normalize(normalInterp);
-        vec3 viewDir = normalize(-vertPos);
+        //vec3 normal1 = normalInterp;
+        //vec3 viewDir = normalize(-vertPos);
         // this is blinn phong
-        vec3 halfDir = normalize(lightVectorW + viewDir);
-        float specAngle = max(dot(halfDir, normal1), 0.0);
-        specular = pow(specAngle, 16.0);
+        //vec3 halfDir = normalize(lightVectorW + viewDir);
+        //float specAngle = max(dot(halfDir, normal1), 0.0);
+        //specular = pow(specAngle, 16.0);
 
         vec3 color;
         vec4 nightColor = texture2D(nightTexture, vUV).rgba;
         vec3 diffuseColor = texture2D(diffuseTexture, vUV).rgb;
     
-        color = specular * specColor + (1.0-shininess) * diffuseColor * lightDiffuse + (nightColor.rgb * nightColor.a * pow((1.0 - lightDiffuse), 6.0));
+        color = specular * specColor + vLightWeighting * (1.0-shininess) * diffuseColor * lightDiffuse + (nightColor.rgb * nightColor.a * pow((1.0 - lightDiffuse), 6.0));
         gl_FragColor = vec4(color, 1.0);
     }
     `,

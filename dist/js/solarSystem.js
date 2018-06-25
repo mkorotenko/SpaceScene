@@ -22,7 +22,7 @@ var create = function() {
             z: 0.0014427063671944287,
         };
         const uniforms = {
-            vLightPosition: {value: new THREE.Vector3(sunPosition.x,sunPosition.y,sunPosition.z) },
+            lightPosition: {value: new THREE.Vector3(sunPosition.x,sunPosition.y,sunPosition.z) },
             diffuseTexture: { value: textureLoader.load( "textures/planets/8k_earth_daymap.jpg" ) },
             nightTexture: { value: textureLoader.load( "textures/planets/earth-night-o2.png" ) },
             normalTexture: { value: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ) }
@@ -40,7 +40,7 @@ var create = function() {
         // (index):1 WebGL: too many errors, no more errors will be reported to the console for this context.
 
         var geometry = new THREE.IcosahedronBufferGeometry(0.2, 5);
-        var earth = new THREE.Mesh(geometry, material);
+        var earth = new THREE.Mesh(geometry, materialNormal);
 
         var c = 24*60*60*1000
         var l = ((Math.PI*2)/c)*30
