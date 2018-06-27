@@ -1,4 +1,3 @@
-
 const scene = require('./scene.js').scene;
 const camera = require('./camera.js').camera;
 const nebula = require('./nebulaBox.js').create;

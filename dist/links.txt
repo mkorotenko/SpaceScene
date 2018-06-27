@@ -20,3 +20,5 @@ http://learnwebgl.brown37.net/09_lights/lights_combined.html - Combining Ambient
 http://www.shadedrelief.com/natural3/pages/textures.html
 http://www.shadedrelief.com/natural3/pages/clouds.html
 http://fabiensanglard.net/bumpMapping/index.php - normal shader
+https://stemkoski.github.io/Three.js/
+https://www.shadertoy.com/view/XslGRr - shader clouds
