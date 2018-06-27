@@ -6,7 +6,7 @@
 // "uniform mat3 normalMatrix;",
 // "uniform vec3 cameraPosition;",
 //attribute vec3 position;//vPos
-//attribute vec3 normal;//normals
+//attribute vec3 normal;//objectNormal
 //attribute vec2 uv;
 //http://www.mathematik.uni-marburg.de/~thormae/lectures/graphics1/code/WebGLShaderLightMat/ShaderLightMat.html
 module.exports = {
@@ -20,18 +20,15 @@ module.exports = {
 
     void main() {
 
-        vUV = uv;
-
-        vec3 objectNormal = vec3( normal );
-
-        vec3 transformedNormal = normalMatrix * objectNormal;
-
+        vec3 transformedNormal = normalMatrix * normal;
         vNormal = normalize( transformedNormal );
 
         vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-        gl_Position = projectionMatrix * mvPosition;
-
         vViewPosition = - mvPosition.xyz;
+
+        vUV = uv;
+
+        gl_Position = projectionMatrix * mvPosition;
 
     }
     `,
