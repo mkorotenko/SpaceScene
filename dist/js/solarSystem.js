@@ -23,9 +23,10 @@ var create = function() {
         };
         const uniforms = {
             lightPosition: {value: new THREE.Vector3(sunPosition.x,sunPosition.y,sunPosition.z) },
-            diffuseTexture: { value: textureLoader.load( "textures/planets/8k_earth_daymap.jpg" ) },
-            nightTexture: { value: textureLoader.load( "textures/planets/earth-night-o2.png" ) },
-            normalTexture: { value: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ) }
+            map: { value: textureLoader.load( "textures/planets/8k_earth_daymap.jpg" ) },
+            emissiveMap: { value: textureLoader.load( "textures/planets/earth-night-o2.png" ) },
+            specularMap: textureLoader.load( "textures/planets/earth_specular_2048.jpg" ),
+            normalMap: { value: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ) }
           };
          const shaderMaterial = new THREE.ShaderMaterial({
              uniforms: uniforms,

@@ -6,7 +6,7 @@ const Raycaster = require('./raycaster.js').Raycaster;
 const InertialControl = require('./inertialControl.js').default;
 
 var controls;
-var stats = new Stats();
+var stats;
 var clock = new THREE.Clock();
 
 init();
@@ -38,7 +38,10 @@ function init() {
     
     container.appendChild( scene.renderer.domElement );
 
-    container.appendChild( stats.dom );
+    setTimeout(() => {
+        stats = new Stats();
+        container.appendChild( stats.dom );
+    }, 3000);
 
     controls = new InertialControl(camera);
     controls.movementSpeed = 0.1;
@@ -100,7 +103,9 @@ function animate() {
 
     controls.update( delta );
     scene.renderTo(camera);
-    stats.update();
+
+    if (stats)
+        stats.update();
 }
 
 //exports = {}
