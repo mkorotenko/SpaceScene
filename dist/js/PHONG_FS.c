@@ -12,8 +12,6 @@ precision highp int;
 #define RECIPROCAL_PI 0.31830988618
 #define saturate(a) clamp( a, 0.0, 1.0 )
 
-float pow2( const in float x ) { return x*x; }
-float pow4( const in float x ) { float x2 = x*x; return x2*x2; }
 struct IncidentLight {
 	vec3 color;
 	vec3 direction;
@@ -53,11 +51,11 @@ varying vec3 vViewPosition;
 varying vec3 vNormal;
 varying vec2 vUv;
 
-uniform vec3 diffuse;
-uniform vec3 emissive;
-uniform vec3 specular;
-uniform float shininess;
-uniform float opacity;
+//uniform vec3 diffuse;
+//uniform vec3 emissive;
+//uniform vec3 specular;
+//uniform float shininess;
+//uniform float opacity;
 
 uniform sampler2D map;
 uniform sampler2D emissiveMap;
@@ -68,6 +66,8 @@ uniform vec2 normalScale;
 uniform vec3 ambientLightColor;
 uniform PointLight pointLights[ 1 ];
 
+float pow2( const in float x ) { return x*x; }
+float pow4( const in float x ) { float x2 = x*x; return x2*x2; }
 float punctualLightIntensityToIrradianceFactor( const in float lightDistance, const in float cutoffDistance, const in float decayExponent ) {
 	if( decayExponent > 0.0 ) {
 		#if defined ( PHYSICALLY_CORRECT_LIGHTS )
@@ -136,12 +136,11 @@ vec3 perturbNormal2Arb( vec3 eye_pos, vec3 surf_norm ) {
 
 void main() {
 
-	vec4 diffuseColor = vec4( diffuse, opacity );
-	ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
-	vec3 totalEmissiveRadiance = emissive;
-
 	vec4 texelColor = texture2D( map, vUv );
-	diffuseColor *= texelColor;
+
+	//vec4 diffuseColor = vec4( diffuse, opacity );
+	//diffuseColor *= texelColor;
+	vec4 diffuseColor = texelColor;
 
 	float specularStrength;
 
@@ -152,13 +151,17 @@ void main() {
 
 	normal = perturbNormal2Arb( -vViewPosition, normal );
 
+	//vec3 totalEmissiveRadiance = emissive;
+	vec3 totalEmissiveRadiance = vec3( 1.0 );
 	vec4 emissiveColor = texture2D( emissiveMap, vUv );
 	totalEmissiveRadiance *= emissiveColor.rgb;
 
 	BlinnPhongMaterial material;
 	material.diffuseColor = diffuseColor.rgb;
-	material.specularColor = specular;
-	material.specularShininess = shininess;
+	//material.specularColor = specular;
+	material.specularColor = vec3( 1.0 );
+	//material.specularShininess = shininess;
+	material.specularShininess = 1.0;
 	material.specularStrength = specularStrength;
 
 	GeometricContext geometry;
@@ -167,8 +170,11 @@ void main() {
 	geometry.viewDir = normalize( vViewPosition );
 	IncidentLight directLight;
 
+	ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
+
 	PointLight pointLight;
 	pointLight = pointLights[ 0 ];
+
 	getPointDirectLightIrradiance( pointLight, geometry, directLight );
 	RE_Direct_BlinnPhong( directLight, geometry, material, reflectedLight );
 		
