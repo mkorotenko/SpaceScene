@@ -27,7 +27,7 @@ var create = function() {
             nightTexture: { value: textureLoader.load( "textures/planets/earth-night-o2.png" ) },
             normalTexture: { value: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ) }
           };
-         const material = new THREE.ShaderMaterial({
+         const shaderMaterial = new THREE.ShaderMaterial({
              uniforms: uniforms,
              vertexShader: shaders.vs,
              fragmentShader: shaders.fs,
@@ -40,7 +40,7 @@ var create = function() {
         // (index):1 WebGL: too many errors, no more errors will be reported to the console for this context.
 
         var geometry = new THREE.IcosahedronBufferGeometry(0.2, 5);
-        var earth = new THREE.Mesh(geometry, materialNormal);
+        var earth = new THREE.Mesh(geometry, shaderMaterial);
 
         var c = 24*60*60*1000
         var l = ((Math.PI*2)/c)*30
