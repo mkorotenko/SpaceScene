@@ -22,7 +22,21 @@ var create = function() {
             z: 0.0014427063671944287,
         };
         const uniforms = {
-            lightPosition: {value: new THREE.Vector3(sunPosition.x,sunPosition.y,sunPosition.z) },
+            ambientLightColor: { value: new THREE.Vector3(1.0,1.0,1.0) },
+            directionalLights: { value: [] },
+            spotLights: { value: [] },
+            rectAreaLights: { value: [] },
+            pointLights: { value: [] },
+            hemisphereLights: { value: [] },
+
+            directionalShadowMap: { value: [] },
+            directionalShadowMatrix: { value: [] },
+            spotShadowMap: { value: [] },
+            spotShadowMatrix: { value: [] },
+            pointShadowMap: { value: [] },
+            pointShadowMatrix: { value: [] },
+
+            lightPosition: { value: new THREE.Vector3(sunPosition.x,sunPosition.y,sunPosition.z) },
             diffuseTexture: { value: textureLoader.load( "textures/planets/8k_earth_daymap.jpg" ) },
             nightTexture: { value: textureLoader.load( "textures/planets/earth-night-o2.png" ) },
             normalTexture: { value: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ) }
@@ -31,7 +45,8 @@ var create = function() {
              uniforms: uniforms,
              vertexShader: shaders.vs,
              fragmentShader: shaders.fs,
-             transparent: true
+             transparent: true,
+             lights: true
            });
         // [.Offscreen-For-WebGL-0638A120]GL ERROR :GL_OUT_OF_MEMORY : glFramebufferTexture2D: <- error from previous GL command
         // 65[.Offscreen-For-WebGL-0638A120]GL ERROR :GL_OUT_OF_MEMORY : glFramebufferTexture2D: 
