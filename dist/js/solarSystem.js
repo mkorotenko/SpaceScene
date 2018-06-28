@@ -21,38 +21,48 @@ var create = function() {
             y: 0.0013767499288792747, 
             z: 0.0014427063671944287,
         };
-        const uniforms = {
-            ambientLightColor: { value: new THREE.Vector3(1.0,1.0,1.0) },
-            directionalLights: { value: [] },
-            spotLights: { value: [] },
-            rectAreaLights: { value: [] },
-            pointLights: { value: [] },
-            hemisphereLights: { value: [] },
 
-            directionalShadowMap: { value: [] },
-            directionalShadowMatrix: { value: [] },
-            spotShadowMap: { value: [] },
-            spotShadowMatrix: { value: [] },
-            pointShadowMap: { value: [] },
-            pointShadowMatrix: { value: [] },
+        const m4 = new THREE.Matrix4();
+        m4.set( 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 );
+        const pointLights = {
+            color: new THREE.Color(1.4, 1.4, 1.4),
+            decay:0,
+            distance:0,
+            position: new THREE.Vector3(0.892881176630784, 0.2328978330166388, -0.2549993476641076),
+            shadow:false,
+            shadowBias:0,
+            shadowCameraFar:1000,
+            shadowCameraNear:1,
+            shadowMapSize: new THREE.Vector2(0, 0),
+            shadowRadius:1
+        };
+        const uniforms = {
+            // ambientLightColor: { value: new THREE.Vector3(1.0,1.0,1.0) },
+            // directionalLights: { value: [] },
+            // spotLights: { value: [] },
+            // rectAreaLights: { value: [] },
+            // pointLights: { value: [pointLights] },
+            // hemisphereLights: { value: [] },
+
+            // directionalShadowMap: { value: [] },
+            // directionalShadowMatrix: { value: [] },
+            // spotShadowMap: { value: [] },
+            // spotShadowMatrix: { value: [] },
+            // pointShadowMap: { value: [null] },
+            // pointShadowMatrix: { value: [m4] },
 
             lightPosition: { value: new THREE.Vector3(sunPosition.x,sunPosition.y,sunPosition.z) },
-            diffuseTexture: { value: textureLoader.load( "textures/planets/8k_earth_daymap.jpg" ) },
-            nightTexture: { value: textureLoader.load( "textures/planets/earth-night-o2.png" ) },
-            normalTexture: { value: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ) }
+            map: { value: textureLoader.load( "textures/planets/8k_earth_daymap.jpg" ) },
+            specularMap: { value: textureLoader.load( "textures/planets/earth-night-o2.png" ) },
+            normalMap: { value: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ) }
           };
          const shaderMaterial = new THREE.ShaderMaterial({
              uniforms: uniforms,
-             vertexShader: shaders.vs,
-             fragmentShader: shaders.fs,
+             vertexShader: shaders.vs2,
+             fragmentShader: shaders.fs2,
              transparent: true,
-             lights: true
+            //lights: true
            });
-        // [.Offscreen-For-WebGL-0638A120]GL ERROR :GL_OUT_OF_MEMORY : glFramebufferTexture2D: <- error from previous GL command
-        // 65[.Offscreen-For-WebGL-0638A120]GL ERROR :GL_OUT_OF_MEMORY : glFramebufferTexture2D: 
-        // 7[.Offscreen-For-WebGL-0638A120]GL ERROR :GL_INVALID_FRAMEBUFFER_OPERATION : glClear: framebuffer incomplete (check)
-        // 119[.Offscreen-For-WebGL-0638A120]GL ERROR :GL_INVALID_FRAMEBUFFER_OPERATION : glDrawArrays: framebuffer incomplete (check)
-        // (index):1 WebGL: too many errors, no more errors will be reported to the console for this context.
 
         var geometry = new THREE.IcosahedronBufferGeometry(0.2, 5);
         var earth = new THREE.Mesh(geometry, shaderMaterial);
