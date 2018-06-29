@@ -72,6 +72,10 @@ module.exports = {
     uniform vec3 ambientLightColor;
     uniform PointLight pointLights[ 1 ];
 
+    uniform vec3 lightPosition;
+    varying vec3 vPositionW;
+    varying vec3 vNormalW;
+
     float pow2( const in float x ) { return x*x; }
     float pow4( const in float x ) { float x2 = x*x; return x2*x2; }
     float punctualLightIntensityToIrradianceFactor( const in float lightDistance, const in float cutoffDistance, const in float decayExponent ) {
@@ -104,8 +108,8 @@ module.exports = {
         return irradiance;
     }
     void getPointDirectLightIrradiance( const in PointLight pointLight, const in GeometricContext geometry, out IncidentLight directLight ) {
-        //vec3 lVector = pointLight.position - geometry.position;
-        vec3 lVector = vec3( 0.0 ) - geometry.position;
+        vec3 lVector = pointLight.position - geometry.position;
+        //vec3 lVector = lightPosition - geometry.position;
         directLight.direction = normalize( lVector );
         float lightDistance = length( lVector );
         directLight.color = vec3( 1.0 );//pointLight.color;
@@ -143,10 +147,6 @@ module.exports = {
         return normalize( tsn * mapN );
     }
 
-    uniform vec3 lightPosition;
-    varying vec3 vPositionW;
-    varying vec3 vNormalW;
-
     void main() {
 
         vec4 texelColor = texture2D( map, vUv );
@@ -155,8 +155,8 @@ module.exports = {
         //diffuseColor *= texelColor;
         vec4 diffuseColor = texelColor;
 
-        vec3 lightVectorW = normalize(lightPosition - vPositionW);
-        float lightDiffuse = clamp(dot(vNormalW, lightVectorW),0.015,1.0);
+        //vec3 lightVectorW = normalize(lightPosition - vPositionW);
+        //float lightDiffuse = clamp(dot(vNormalW, lightVectorW),0.015,1.0);
 
          float specularStrength;
 
@@ -167,13 +167,8 @@ module.exports = {
 
         normal = perturbNormal2Arb( -vViewPosition, normal );
 
-        // //vec3 totalEmissiveRadiance = emissive;
-         vec3 totalEmissiveRadiance = vec3( 1.0 );
-         vec4 emissiveColor = texture2D( emissiveMap, vUv );
-         totalEmissiveRadiance *= emissiveColor.rgb * pow((1.0 - lightDiffuse), 8.0);
-
          BlinnPhongMaterial material;
-         material.diffuseColor = vec3( 1.0 );//diffuseColor.rgb;
+         material.diffuseColor = diffuseColor.rgb;
          //material.specularColor = specular;
          material.specularColor = vec3( 1.0 );
          //material.specularShininess = shininess;
@@ -181,9 +176,9 @@ module.exports = {
          material.specularStrength = specularStrength;
 
         GeometricContext geometry;
-        geometry.position = - vViewPosition;
-        geometry.normal = normal;
-        geometry.viewDir = normalize( vViewPosition );
+        geometry.position = vPositionW;
+        geometry.normal = vNormalW;//normal;
+        geometry.viewDir = normalize( vPositionW );
         IncidentLight directLight;
 
         ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
@@ -197,8 +192,15 @@ module.exports = {
         // vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );
         // RE_IndirectDiffuse_BlinnPhong( irradiance, geometry, material, reflectedLight );
 
+        // //vec3 totalEmissiveRadiance = emissive;
+        vec3 totalEmissiveRadiance = vec3( 1.0 );
+        vec4 emissiveColor = texture2D( emissiveMap, vUv );
+        float lightDiffuse = clamp(dot(vNormalW, directLight.direction)+0.1,0.0,1.0);
+        totalEmissiveRadiance *= emissiveColor.rgb * pow((1.0 - lightDiffuse), 8.0);
+
         //(nightColor.rgb * nightColor.a * pow((1.0 - lightDiffuse), 6.0))
-        vec3 outgoingLight = diffuseColor.rgb*lightDiffuse + totalEmissiveRadiance;// + reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;
+        //diffuseColor.rgb*lightDiffuse + 
+        vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;
 
         gl_FragColor = vec4( outgoingLight, diffuseColor.a );
 

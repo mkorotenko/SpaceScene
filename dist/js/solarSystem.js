@@ -28,7 +28,7 @@ var create = function() {
              color: new THREE.Color(1.4, 1.4, 1.4),
              decay:0,
              distance:0,
-             position: new THREE.Vector3(0.892881176630784, 0.2328978330166388, -0.2549993476641076),
+             position: new THREE.Vector3(sunPosition.x,sunPosition.y,sunPosition.z),
              shadow:false,
              shadowBias:0,
              shadowCameraFar:1000,
