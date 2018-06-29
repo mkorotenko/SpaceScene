@@ -58,8 +58,8 @@ var create = function() {
           };
          const shaderMaterial = new THREE.ShaderMaterial({
              uniforms: uniforms,
-             vertexShader: shaders.vs2,
-             fragmentShader: shaders.fs2,
+             vertexShader: shaders.vs,
+             fragmentShader: shaders.fs,
              transparent: true,
             //lights: true
            });
