@@ -22,3 +22,4 @@ http://www.shadedrelief.com/natural3/pages/clouds.html
 http://fabiensanglard.net/bumpMapping/index.php - normal shader
 https://stemkoski.github.io/Three.js/
 https://www.shadertoy.com/view/XslGRr - shader clouds
+https://substack.neocities.org/globe-tutorial/

@@ -168,9 +168,9 @@ module.exports = {
         normal = perturbNormal2Arb( -vViewPosition, normal );
 
         // //vec3 totalEmissiveRadiance = emissive;
-        // vec3 totalEmissiveRadiance = vec3( 1.0 );
-        // vec4 emissiveColor = texture2D( emissiveMap, vUv );
-        // totalEmissiveRadiance *= emissiveColor.rgb;
+         vec3 totalEmissiveRadiance = vec3( 1.0 );
+         vec4 emissiveColor = texture2D( emissiveMap, vUv );
+         totalEmissiveRadiance *= emissiveColor.rgb * vec3(1.0-lightDiffuse);
 
          BlinnPhongMaterial material;
          material.diffuseColor = vec3( 1.0 );//diffuseColor.rgb;
@@ -197,7 +197,7 @@ module.exports = {
         // vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );
         // RE_IndirectDiffuse_BlinnPhong( irradiance, geometry, material, reflectedLight );
 
-        vec3 outgoingLight = diffuseColor.rgb*lightDiffuse;// + reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular;// + totalEmissiveRadiance;
+        vec3 outgoingLight = diffuseColor.rgb*lightDiffuse + totalEmissiveRadiance;// + reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;
 
         gl_FragColor = vec4( outgoingLight, diffuseColor.a );
 
