@@ -132,7 +132,8 @@ module.exports = {
         vec3 q1 = vec3( dFdy( eye_pos.x ), dFdy( eye_pos.y ), dFdy( eye_pos.z ) );
         vec2 st0 = dFdx( vUv.st );
         vec2 st1 = dFdy( vUv.st );
-        float scale = sign( st1.t * st0.s - st0.t * st1.s );		scale *= float( gl_FrontFacing ) * 2.0 - 1.0;
+        float scale = sign( st1.t * st0.s - st0.t * st1.s );		
+        scale *= float( gl_FrontFacing ) * 2.0 - 1.0;
         vec3 S = normalize( ( q0 * st1.t - q1 * st0.t ) * scale );
         vec3 T = normalize( ( - q0 * st1.s + q1 * st0.s ) * scale );
         vec3 N = normalize( surf_norm );
@@ -150,55 +151,55 @@ module.exports = {
 
         vec4 texelColor = texture2D( map, vUv );
 
-        //vec4 diffuseColor = vec4( diffuse, opacity );
+        //vec4 diffuseColor = vec4( diffuse, 1.0);//opacity );
         //diffuseColor *= texelColor;
         vec4 diffuseColor = texelColor;
 
         vec3 lightVectorW = normalize(lightPosition - vPositionW);
         float lightDiffuse = clamp(dot(vNormalW, lightVectorW),0.015,1.0);
 
-        // float specularStrength;
+         float specularStrength;
 
-        // vec4 texelSpecular = texture2D( specularMap, vUv );
-        // specularStrength = texelSpecular.r;
+         vec4 texelSpecular = texture2D( specularMap, vUv );
+         specularStrength = texelSpecular.r;
 
-        // vec3 normal = normalize( vNormal );
+        vec3 normal = normalize( vNormal );
 
-        // normal = perturbNormal2Arb( -vViewPosition, normal );
+        normal = perturbNormal2Arb( -vViewPosition, normal );
 
         // //vec3 totalEmissiveRadiance = emissive;
         // vec3 totalEmissiveRadiance = vec3( 1.0 );
         // vec4 emissiveColor = texture2D( emissiveMap, vUv );
         // totalEmissiveRadiance *= emissiveColor.rgb;
 
-        // BlinnPhongMaterial material;
-        // material.diffuseColor = diffuseColor.rgb;
-        // //material.specularColor = specular;
-        // material.specularColor = vec3( 1.0 );
-        // //material.specularShininess = shininess;
-        // material.specularShininess = 1.0;
-        // material.specularStrength = specularStrength;
+         BlinnPhongMaterial material;
+         material.diffuseColor = vec3( 1.0 );//diffuseColor.rgb;
+         //material.specularColor = specular;
+         material.specularColor = vec3( 1.0 );
+         //material.specularShininess = shininess;
+         material.specularShininess = 1.0;
+         material.specularStrength = specularStrength;
 
-        // GeometricContext geometry;
-        // geometry.position = - vViewPosition;
-        // geometry.normal = normal;
-        // geometry.viewDir = normalize( vViewPosition );
-        // IncidentLight directLight;
+        GeometricContext geometry;
+        geometry.position = - vViewPosition;
+        geometry.normal = normal;
+        geometry.viewDir = normalize( vViewPosition );
+        IncidentLight directLight;
 
-        // ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
+        ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
 
-        // PointLight pointLight;
-        // pointLight = pointLights[ 0 ];
+         PointLight pointLight;
+         pointLight = pointLights[ 0 ];
 
-        // getPointDirectLightIrradiance( pointLight, geometry, directLight );
-        // RE_Direct_BlinnPhong( directLight, geometry, material, reflectedLight );
+         getPointDirectLightIrradiance( pointLight, geometry, directLight );
+         RE_Direct_BlinnPhong( directLight, geometry, material, reflectedLight );
             
         // vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );
         // RE_IndirectDiffuse_BlinnPhong( irradiance, geometry, material, reflectedLight );
 
-        //vec3 outgoingLight = //reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;
+        vec3 outgoingLight = diffuseColor.rgb*lightDiffuse;// + reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular;// + totalEmissiveRadiance;
 
-        gl_FragColor = vec4(diffuseColor.rgb*lightDiffuse, diffuseColor.a);//vec4( outgoingLight, diffuseColor.a );
+        gl_FragColor = vec4( outgoingLight, diffuseColor.a );
 
     }
     `,

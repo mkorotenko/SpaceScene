@@ -22,26 +22,26 @@ var create = function() {
             z: 0.0014427063671944287,
         };
 
-        const m4 = new THREE.Matrix4();
-        m4.set( 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 );
-        const pointLights = {
-            color: new THREE.Color(1.4, 1.4, 1.4),
-            decay:0,
-            distance:0,
-            position: new THREE.Vector3(0.892881176630784, 0.2328978330166388, -0.2549993476641076),
-            shadow:false,
-            shadowBias:0,
-            shadowCameraFar:1000,
-            shadowCameraNear:1,
-            shadowMapSize: new THREE.Vector2(0, 0),
-            shadowRadius:1
-        };
+        // const m4 = new THREE.Matrix4();
+        // m4.set( 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 );
+         const pointLights = {
+             color: new THREE.Color(1.4, 1.4, 1.4),
+             decay:0,
+             distance:0,
+             position: new THREE.Vector3(0.892881176630784, 0.2328978330166388, -0.2549993476641076),
+             shadow:false,
+             shadowBias:0,
+             shadowCameraFar:1000,
+             shadowCameraNear:1,
+             shadowMapSize: new THREE.Vector2(0, 0),
+             shadowRadius:1
+         };
         const uniforms = {
             // ambientLightColor: { value: new THREE.Vector3(1.0,1.0,1.0) },
             // directionalLights: { value: [] },
             // spotLights: { value: [] },
             // rectAreaLights: { value: [] },
-            // pointLights: { value: [pointLights] },
+            pointLights: { value: [pointLights] },
             // hemisphereLights: { value: [] },
 
             // directionalShadowMap: { value: [] },
@@ -54,7 +54,8 @@ var create = function() {
             lightPosition: { value: new THREE.Vector3(sunPosition.x,sunPosition.y,sunPosition.z) },
             map: { value: textureLoader.load( "textures/planets/8k_earth_daymap.jpg" ) },
             specularMap: { value: textureLoader.load( "textures/planets/earth-night-o2.png" ) },
-            normalMap: { value: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ) }
+            normalMap: { value: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ) },
+            emissiveMap: { value: textureLoader.load( "textures/planets/earth-night-o2.png" ) }
           };
          const shaderMaterial = new THREE.ShaderMaterial({
              uniforms: uniforms,
