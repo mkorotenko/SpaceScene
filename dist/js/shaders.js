@@ -170,7 +170,7 @@ module.exports = {
         // //vec3 totalEmissiveRadiance = emissive;
          vec3 totalEmissiveRadiance = vec3( 1.0 );
          vec4 emissiveColor = texture2D( emissiveMap, vUv );
-         totalEmissiveRadiance *= emissiveColor.rgb * vec3(1.0-lightDiffuse);
+         totalEmissiveRadiance *= emissiveColor.rgb * pow((1.0 - lightDiffuse), 8.0);
 
          BlinnPhongMaterial material;
          material.diffuseColor = vec3( 1.0 );//diffuseColor.rgb;
@@ -197,10 +197,72 @@ module.exports = {
         // vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );
         // RE_IndirectDiffuse_BlinnPhong( irradiance, geometry, material, reflectedLight );
 
+        //(nightColor.rgb * nightColor.a * pow((1.0 - lightDiffuse), 6.0))
         vec3 outgoingLight = diffuseColor.rgb*lightDiffuse + totalEmissiveRadiance;// + reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;
 
         gl_FragColor = vec4( outgoingLight, diffuseColor.a );
 
+    }
+    `,
+    vs4: `
+    precision highp float;
+    precision highp int;
+
+    varying vec3 vViewPosition;
+    varying vec3 vNormal;
+    varying vec2 vUV;
+
+    void main() {
+
+        vec3 transformedNormal = normalMatrix * normal;
+        vNormal = normalize( transformedNormal );
+
+        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+        vViewPosition = - mvPosition.xyz;
+
+        vUV = uv;
+
+        gl_Position = projectionMatrix * mvPosition;
+
+    }
+    `,
+// In the fragment shader
+// "uniform mat4 viewMatrix;",
+// "uniform vec3 cameraPosition;",
+    fs4: `
+    precision mediump int;
+    precision mediump float;
+
+    // Varying
+    varying vec2 vUV;
+    varying vec3 vViewPosition;
+    varying vec3 vNormal;
+
+    // Refs
+    uniform vec3 lightPosition;
+    uniform sampler2D diffuseTexture;
+    uniform sampler2D nightTexture;
+    uniform sampler2D normalTexture;
+    
+    const vec3 specColor = vec3(1.0, 1.0, 1.0);
+
+    void main(void) {
+        vec3 lightVectorW = normalize(lightPosition - vViewPosition);
+    
+        vec3 normal = 2.0 * texture2D (normalTexture, vUV).rgb - 1.0;
+        normal = normalize (normal);
+
+        // diffuse
+        float lightDiffuse = clamp(dot(vNormal, lightVectorW),0.015,1.0);
+        float shininess = clamp(dot(normal, lightVectorW),0.01,1.0);
+        float specular = 0.0;
+
+        vec3 color;
+        vec4 nightColor = texture2D(nightTexture, vUV).rgba;
+        vec3 diffuseColor = texture2D(diffuseTexture, vUV).rgb;
+    
+        color = specular * specColor + (1.0-shininess) * diffuseColor * lightDiffuse + (nightColor.rgb * nightColor.a * pow((1.0 - lightDiffuse), 6.0));
+        gl_FragColor = vec4(color, 1.0);
     }
     `,
     vs: `
