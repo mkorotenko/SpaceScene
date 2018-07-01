@@ -86,7 +86,7 @@ module.exports = {
     varying vec2 vUv;
 
     //uniform vec3 diffuse;
-    //uniform vec3 emissive;
+    uniform vec3 emissive;
     //uniform vec3 specular;
     //uniform float shininess;
     //uniform float opacity;
@@ -185,8 +185,7 @@ module.exports = {
 
         normal = perturbNormal2Arb( -vViewPosition, normal );
 
-        //vec3 totalEmissiveRadiance = emissive;
-        vec3 totalEmissiveRadiance = vec3( 1.0 );
+        vec3 totalEmissiveRadiance = emissive;
         vec4 emissiveColor = texture2D( emissiveMap, vUv );
         //totalEmissiveRadiance *= emissiveColor.rgb;
 

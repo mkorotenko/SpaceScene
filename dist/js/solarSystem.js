@@ -56,6 +56,7 @@ var create = function() {
             specularMap: { value: textureLoader.load( "textures/planets/earth_specular_2048.jpg" ) },
             normalMap: { value: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ) },
             normalScale: { value: new THREE.Vector2( 0.85, 0.85 ) },
+            emissive: { value: new THREE.Vector3( 0.85, 0.85, 0.85 ) },
             emissiveMap: { value: textureLoader.load( "textures/planets/earth-night-o2.png" ) }
           };
          const shaderMaterial = new THREE.ShaderMaterial({
