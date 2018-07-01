@@ -188,7 +188,7 @@ module.exports = {
         //vec3 totalEmissiveRadiance = emissive;
         vec3 totalEmissiveRadiance = vec3( 1.0 );
         vec4 emissiveColor = texture2D( emissiveMap, vUv );
-        totalEmissiveRadiance *= emissiveColor.rgb;
+        //totalEmissiveRadiance *= emissiveColor.rgb;
 
         BlinnPhongMaterial material;
         material.diffuseColor = diffuseColor.rgb;
@@ -214,6 +214,9 @@ module.exports = {
             
         vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );
         RE_IndirectDiffuse_BlinnPhong( irradiance, geometry, material, reflectedLight );
+
+        float lightDiffuse = clamp(dot(vNormal, directLight.direction)+0.1,0.0,1.0);
+        totalEmissiveRadiance *= emissiveColor.rgb * pow((1.0 - lightDiffuse), 8.0);
 
         vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;
 
