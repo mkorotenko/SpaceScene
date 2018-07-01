@@ -10,12 +10,28 @@
 //attribute vec2 uv;
 //http://www.mathematik.uni-marburg.de/~thormae/lectures/graphics1/code/WebGLShaderLightMat/ShaderLightMat.html
 module.exports = {
+    q:`
+    void main() {
+
+        vec3 transformedNormal = normalMatrix * normal;
+        vNormal = normalize( transformedNormal );
+
+        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+        vViewPosition = - mvPosition.xyz;
+
+        vUV = uv;
+
+        gl_Position = projectionMatrix * mvPosition;
+
+    }`,
     vs:`
     precision highp float;
     precision highp int;
     
     varying vec3 vViewPosition;
     varying vec3 vNormal;
+    varying vec3 vPositionW;
+    varying vec3 vNormalW;
     varying vec2 vUv;
 
     void main() {
@@ -35,7 +51,11 @@ module.exports = {
         gl_Position = projectionMatrix * mvPosition;
 
         vViewPosition = - mvPosition.xyz;
-        vec4 worldPosition = modelMatrix * vec4( transformed, 1.0 );
+        //vec4 worldPosition = modelMatrix * vec4( transformed, 1.0 );
+        vNormalW = normalize(vec3(modelMatrix * vec4(normal, 0.0)));
+        
+        vec4 positionW = vec4( position, 1.0 );
+        vPositionW = vec3(modelMatrix * positionW);
 
     }`,
     fs:`
@@ -84,6 +104,8 @@ module.exports = {
     varying vec3 vViewPosition;
     varying vec3 vNormal;
     varying vec2 vUv;
+    varying vec3 vNormalW;
+    varying vec3 vPositionW;
 
     //uniform vec3 diffuse;
     uniform vec3 emissive;
@@ -181,7 +203,7 @@ module.exports = {
         vec4 texelSpecular = texture2D( specularMap, vUv );
         specularStrength = texelSpecular.r;
 
-        vec3 normal = normalize( vNormal );
+        vec3 normal = normalize( vNormalW );
 
         normal = perturbNormal2Arb( -vViewPosition, normal );
 
@@ -198,9 +220,12 @@ module.exports = {
         material.specularStrength = specularStrength;
 
         GeometricContext geometry;
-        geometry.position = - vViewPosition;
+        // geometry.position = - vViewPosition;
+        // geometry.normal = normal;
+        // geometry.viewDir = normalize( vViewPosition );
+        geometry.position = vPositionW;
         geometry.normal = normal;
-        geometry.viewDir = normalize( vViewPosition );
+        geometry.viewDir = normalize( vPositionW );
         IncidentLight directLight;
 
         ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
@@ -214,7 +239,8 @@ module.exports = {
         vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );
         RE_IndirectDiffuse_BlinnPhong( irradiance, geometry, material, reflectedLight );
 
-        float lightDiffuse = clamp(dot(vNormal, directLight.direction)+0.1,0.0,1.0);
+        //vec3 vNormalW = normalize(vec3(modelMatrix * vec4(vNormal, 0.0)))
+        float lightDiffuse = clamp(dot(vNormalW, directLight.direction)+0.1,0.0,1.0);
         totalEmissiveRadiance *= emissiveColor.rgb * pow((1.0 - lightDiffuse), 8.0);
 
         vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;
