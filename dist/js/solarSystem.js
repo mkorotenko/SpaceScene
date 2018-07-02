@@ -52,11 +52,11 @@ var create = function() {
             // pointShadowMatrix: { value: [m4] },
 
             lightPosition: { value: new THREE.Vector3(sunPosition.x,sunPosition.y,sunPosition.z) },
-            shininess: { value: 1.0 },
+            shininess: { value: 15.0 },
             diffuse: { value: new THREE.Vector3( 1.0, 1.0, 1.0 ) },
             opacity: { value: 1.0 },
             map: { value: textureLoader.load( "textures/planets/8k_earth_daymap.jpg" ) },
-            specular: { value: new THREE.Vector3( 1.0, 1.0, 1.0 ) },
+            specular: { value: new THREE.Vector3( 0.5, 0.5, 0.5 ) },
             specularMap: { value: textureLoader.load( "textures/planets/earth_specular_2048.jpg" ) },
             normalMap: { value: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ) },
             normalScale: { value: new THREE.Vector2( 0.85, 0.85 ) },
