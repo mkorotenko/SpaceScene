@@ -24,52 +24,41 @@ var create = function() {
 
         // const m4 = new THREE.Matrix4();
         // m4.set( 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 );
-         const pointLights = {
-             color: new THREE.Color(1.4, 1.4, 1.4),
-             decay:0,
-             distance:0,
-             position: new THREE.Vector3(sunPosition.x,sunPosition.y,sunPosition.z),
-             shadow:false,
-             shadowBias:0,
-             shadowCameraFar:1000,
-             shadowCameraNear:1,
-             shadowMapSize: new THREE.Vector2(0, 0),
-             shadowRadius:1
-         };
+        const pointLights = {
+            color: new THREE.Color(1.4, 1.4, 1.4),
+            decay:0,
+            distance:0,
+            position: new THREE.Vector3(sunPosition.x,sunPosition.y,sunPosition.z),
+            shadow:false,
+            shadowBias:0,
+            shadowCameraFar:1000,
+            shadowCameraNear:1,
+            shadowMapSize: new THREE.Vector2(0, 0),
+            shadowRadius:1
+        };
         const uniforms = {
-            // ambientLightColor: { value: new THREE.Vector3(1.0,1.0,1.0) },
-            // directionalLights: { value: [] },
-            // spotLights: { value: [] },
-            // rectAreaLights: { value: [] },
+            ambientLightColor: { value: new THREE.Vector3( 0.02, 0.02, 0.02) },
             pointLights: { value: [pointLights] },
-            // hemisphereLights: { value: [] },
-
-            // directionalShadowMap: { value: [] },
-            // directionalShadowMatrix: { value: [] },
-            // spotShadowMap: { value: [] },
-            // spotShadowMatrix: { value: [] },
-            // pointShadowMap: { value: [null] },
-            // pointShadowMatrix: { value: [m4] },
 
             lightPosition: { value: new THREE.Vector3(sunPosition.x,sunPosition.y,sunPosition.z) },
             shininess: { value: 15.0 },
             diffuse: { value: new THREE.Vector3( 1.0, 1.0, 1.0 ) },
             opacity: { value: 1.0 },
             map: { value: textureLoader.load( "textures/planets/8k_earth_daymap.jpg" ) },
-            specular: { value: new THREE.Vector3( 0.5, 0.5, 0.5 ) },
+            specular: { value: new THREE.Vector3( 0.2, 0.2, 0.2 ) },
             specularMap: { value: textureLoader.load( "textures/planets/earth_specular_2048.jpg" ) },
             normalMap: { value: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ) },
             normalScale: { value: new THREE.Vector2( 0.85, 0.85 ) },
-            emissive: { value: new THREE.Vector3( 0.85, 0.85, 0.85 ) },
+            emissive: { value: new THREE.Vector3( 0.55, 0.55, 0.55 ) },
             emissiveMap: { value: textureLoader.load( "textures/planets/earth-night-o2.png" ) }
-          };
-         const shaderMaterial = new THREE.ShaderMaterial({
-             uniforms: uniforms,
-             vertexShader: shaders.vs,
-             fragmentShader: shaders.fs,
-             transparent: true,
+        };
+        const shaderMaterial = new THREE.ShaderMaterial({
+            uniforms: uniforms,
+            vertexShader: shaders.vs,
+            fragmentShader: shaders.fs,
+            transparent: true,
             //lights: true
-           });
+        });
 
         var geometry = new THREE.IcosahedronBufferGeometry(0.2, 5);
         var earth = new THREE.Mesh(geometry, shaderMaterial);
