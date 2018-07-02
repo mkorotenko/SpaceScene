@@ -107,11 +107,11 @@ module.exports = {
     varying vec3 vNormalW;
     varying vec3 vPositionW;
 
-    //uniform vec3 diffuse;
+    uniform vec3 diffuse;
     uniform vec3 emissive;
-    //uniform vec3 specular;
-    //uniform float shininess;
-    //uniform float opacity;
+    uniform vec3 specular;
+    uniform float shininess;
+    uniform float opacity;
 
     uniform sampler2D map;
     uniform sampler2D emissiveMap;
@@ -180,7 +180,8 @@ module.exports = {
         vec3 q1 = vec3( dFdy( eye_pos.x ), dFdy( eye_pos.y ), dFdy( eye_pos.z ) );
         vec2 st0 = dFdx( vUv.st );
         vec2 st1 = dFdy( vUv.st );
-        float scale = sign( st1.t * st0.s - st0.t * st1.s );		scale *= float( gl_FrontFacing ) * 2.0 - 1.0;
+        float scale = sign( st1.t * st0.s - st0.t * st1.s );		
+        scale *= float( gl_FrontFacing ) * 2.0 - 1.0;
         vec3 S = normalize( ( q0 * st1.t - q1 * st0.t ) * scale );
         vec3 T = normalize( ( - q0 * st1.s + q1 * st0.s ) * scale );
         vec3 N = normalize( surf_norm );
@@ -194,29 +195,26 @@ module.exports = {
 
         vec4 texelColor = texture2D( map, vUv );
 
-        //vec4 diffuseColor = vec4( diffuse, opacity );
-        //diffuseColor *= texelColor;
-        vec4 diffuseColor = texelColor;
+        vec4 diffuseColor = vec4( diffuse, opacity );
+        diffuseColor *= texelColor;
 
         float specularStrength;
 
         vec4 texelSpecular = texture2D( specularMap, vUv );
         specularStrength = texelSpecular.r;
 
-        vec3 normal = normalize( vNormalW );
+        vec3 normal = vNormalW;
 
-        normal = perturbNormal2Arb( -vViewPosition, normal );
+        normal = perturbNormal2Arb( vPositionW, normal );
 
         vec3 totalEmissiveRadiance = emissive;
         vec4 emissiveColor = texture2D( emissiveMap, vUv );
-        //totalEmissiveRadiance *= emissiveColor.rgb;
+        totalEmissiveRadiance *= emissiveColor.rgb;
 
         BlinnPhongMaterial material;
         material.diffuseColor = diffuseColor.rgb;
-        //material.specularColor = specular;
-        material.specularColor = vec3( 1.0 );
-        //material.specularShininess = shininess;
-        material.specularShininess = 1.0;
+        material.specularColor = specular;
+        material.specularShininess = shininess;
         material.specularStrength = specularStrength;
 
         GeometricContext geometry;
@@ -225,7 +223,7 @@ module.exports = {
         // geometry.viewDir = normalize( vViewPosition );
         geometry.position = vPositionW;
         geometry.normal = normal;
-        geometry.viewDir = normalize( vPositionW );
+        geometry.viewDir = vPositionW;
         IncidentLight directLight;
 
         ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
@@ -240,8 +238,8 @@ module.exports = {
         RE_IndirectDiffuse_BlinnPhong( irradiance, geometry, material, reflectedLight );
 
         //vec3 vNormalW = normalize(vec3(modelMatrix * vec4(vNormal, 0.0)))
-        float lightDiffuse = clamp(dot(vNormalW, directLight.direction)+0.1,0.0,1.0);
-        totalEmissiveRadiance *= emissiveColor.rgb * pow((1.0 - lightDiffuse), 8.0);
+        float lightDiffuse = clamp(dot(vNormalW, directLight.direction),0.0,1.0);
+        totalEmissiveRadiance *= pow((1.0 - lightDiffuse), 8.0);
 
         vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;
 
