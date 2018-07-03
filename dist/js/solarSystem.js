@@ -8,10 +8,12 @@ var create = function() {
         var materialNormal = new THREE.MeshPhongMaterial( {
             specular: 0x333333,
             shininess: 15,
-            map: textureLoader.load( "textures/planets/8k_earth_daymap.jpg" ),
-            specularMap: textureLoader.load( "textures/planets/earth_specular_2048.jpg" ),
-            normalMap: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ),
+            map: textureLoader.load( "textures/planets/EarthMap.jpg" ),
+            specularMap: textureLoader.load( "textures/planets/earth_specularmap_flat_8192x4096.jpg" ),
+            normalMap: textureLoader.load( "textures/planets/earth_normalmap_flat_8192x4096.jpg" ),
             normalScale: new THREE.Vector2( 0.85, 0.85 ),
+            //bumpMap: textureLoader.load( "textures/planets/Earth_Bump_map.jpg" ),
+            //bumpScale: 0.001,
             //emissiveMap: textureLoader.load( "textures/planets/earth-night-o2.png" ),
             transparent: true //to resolve artifacts cause by transparent Nebula
         });
@@ -44,10 +46,10 @@ var create = function() {
             shininess: { value: 15.0 },
             diffuse: { value: new THREE.Vector3( 1.0, 1.0, 1.0 ) },
             opacity: { value: 1.0 },
-            map: { value: textureLoader.load( "textures/planets/8k_earth_daymap.jpg" ) },
+            map: { value: textureLoader.load( "textures/planets/EarthMap.jpg" ) },
             specular: { value: new THREE.Vector3( 0.2, 0.2, 0.2 ) },
-            specularMap: { value: textureLoader.load( "textures/planets/earth_specular_2048.jpg" ) },
-            normalMap: { value: textureLoader.load( "textures/planets/earth_normal_2048.jpg" ) },
+            specularMap: { value: textureLoader.load( "textures/planets/earth_specularmap_flat_8192x4096.jpg" ) },
+            normalMap: { value: textureLoader.load( "textures/planets/earth_normalmap_flat_8192x4096.jpg" ) },
             normalScale: { value: new THREE.Vector2( 0.85, 0.85 ) },
             emissive: { value: new THREE.Vector3( 0.55, 0.55, 0.55 ) },
             emissiveMap: { value: textureLoader.load( "textures/planets/earth-night-o2.png" ) }

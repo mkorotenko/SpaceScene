@@ -23,3 +23,5 @@ http://fabiensanglard.net/bumpMapping/index.php - normal shader
 https://stemkoski.github.io/Three.js/
 https://www.shadertoy.com/view/XslGRr - shader clouds
 https://substack.neocities.org/globe-tutorial/
+http://canvas.projekti.info/3d/gfx/Earth_3D/Textures%20Earth/?C=M;O=A - textures
+http://webglplayground.net/ - shader playground
