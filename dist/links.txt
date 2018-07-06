@@ -25,3 +25,88 @@ https://www.shadertoy.com/view/XslGRr - shader clouds
 https://substack.neocities.org/globe-tutorial/
 http://canvas.projekti.info/3d/gfx/Earth_3D/Textures%20Earth/?C=M;O=A - textures
 http://webglplayground.net/ - shader playground
+http://glslsandbox.com/e#46692.0 - desert
+http://glslsandbox.com/e#47165.3 - boiling surface
+http://glslsandbox.com/e#47612.1 - clouds with shadows
+http://glslsandbox.com/e#45998.0 - trough universe
+http://glslsandbox.com/e#2927 - eclipse
+http://glslsandbox.com/e#47523.8 - ocean
+http://glslsandbox.com/e#47698.0 - jupiter
+https://shaderfrog.com/app/view/2317 - transparent Glow:
+fs = `
+#extension GL_OES_standard_derivatives : enable
+
+precision highp float;
+uniform vec3 color;
+uniform float start;
+uniform float end;
+uniform float alpha;
+varying vec3 fPosition;
+varying vec3 fNormal;
+vec4 Transparent_Glow1526111091650_203_main()
+{
+    vec4 Transparent_Glow1526111091650_203_gl_FragColor = vec4(0.0);
+    if (!gl_FrontFacing)
+    {
+        discard;
+    }
+     vec3 normal = normalize(fNormal);
+    vec3 eye = normalize(-fPosition.xyz);
+    vec3 light = normalize(-fPosition.xyz + vec3(1.0, 1.0, 0.0));
+    float NdotE = dot(normal, eye);
+    float NdotL = dot(normal, light);
+    float rim = smoothstep(start, end, 1.0 - NdotE);
+    float spec = pow(NdotL, 8.0);
+    float value = clamp(rim * alpha, 0.0, 0.8) + 0.2;
+    value += smoothstep(spec, 0.0, 0.5);
+    Transparent_Glow1526111091650_203_gl_FragColor = vec4(color * value, value);
+    return Transparent_Glow1526111091650_203_gl_FragColor *= 1.0;
+}
+void main()
+{
+    gl_FragColor = Transparent_Glow1526111091650_203_main();}
+`
+vs = `
+precision highp float;
+uniform mat3 normalMatrix;
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+attribute vec3 position;
+attribute vec3 normal;
+varying vec3 fNormal;
+varying vec3 fPosition;
+vec4 Transparent_Glow1526111091650_203_main()
+{
+    vec4 Transparent_Glow1526111091650_203_gl_Position = vec4(0.0);
+    fNormal = normalize(normalMatrix * normal);
+    vec4 pos = modelViewMatrix * vec4(position, 1.0);
+    fPosition = pos.xyz;
+    Transparent_Glow1526111091650_203_gl_Position = projectionMatrix * pos;
+    return Transparent_Glow1526111091650_203_gl_Position *= 1.0;
+}
+void main()
+{
+    gl_Position = Transparent_Glow1526111091650_203_main();}
+`
+"
+precision highp float;
+uniform mat3 normalMatrix;
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+attribute vec3 position;
+attribute vec3 normal;
+varying vec3 fNormal;
+varying vec3 fPosition;
+vec4 Transparent_Glow1526111091650_203_main() 
+{
+    vec4 Transparent_Glow1526111091650_203_gl_Position = vec4(0.0);
+    fNormal = normalize(normalMatrix * normal);
+    vec4 pos = modelViewMatrix * vec4(position, 1.0);
+    fPosition = pos.xyz;
+    Transparent_Glow1526111091650_203_gl_Position = projectionMatrix * pos;
+    return Transparent_Glow1526111091650_203_gl_Position *= 1.0;
+}
+void main() 
+{
+    gl_Position = Transparent_Glow1526111091650_203_main();}
+"
