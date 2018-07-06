@@ -241,7 +241,16 @@ module.exports = {
         float lightDiffuse = clamp(dot(vNormalW, directLight.direction),0.0,1.0);
         totalEmissiveRadiance *= pow((1.0 - lightDiffuse), 8.0);
 
-        vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;
+        float d = length(pointLight.position - vPositionW);
+        float fatt = min(1.0, 1.0 / (0.3 + 0.007 * d + 0.00008 * d * d));
+
+        vec3 N = vNormalW;
+        vec3 L = normalize(pointLight.position - vPositionW);
+        vec3 V = normalize(cameraPosition - vPositionW);
+        vec3 R = normalize(reflect(-L, N));
+        float specularCoef = pow(max(dot(R, V), 0.0), 20.0) * specularStrength;
+
+        vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance + vec3(1.0,1.0,1.0)*fatt*specularCoef;
 
         gl_FragColor = vec4( outgoingLight, diffuseColor.a );
 

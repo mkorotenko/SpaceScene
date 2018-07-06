@@ -58,12 +58,19 @@ function init() {
     window.get = get;
     window.solarSystem = require('./solarSystem.js');
     const shaders = window.shaders = require('./shaders.js');
+    shaders.reset = function() {
+        window.solarSystem.update();
+    }
+    shaders.restore = function() {
+        window.solarSystem.update(localStorage.getItem('newVs'), localStorage.getItem('newFs'));
+    }
     Object.defineProperty(
         shaders,
         'newVs',
         {
             set: function(value) {
                 window.solarSystem.update(value);
+                localStorage.setItem('newVs', value);
             }
         }
     );
@@ -73,6 +80,7 @@ function init() {
         {
             set: function(value) {
                 window.solarSystem.update(undefined, value);
+                localStorage.setItem('newFs', value);
             }
         }
     );
