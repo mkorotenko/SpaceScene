@@ -54,7 +54,19 @@ function init() {
 
     window.scene = scene;
     window.camera = camera;
+
     window.get = get;
+    window.solarSystem = require('./solarSystem.js');
+    const shaders = window.shaders = require('./shaders.js');
+    Object.defineProperty(
+        shaders,
+        'newVs',
+        {
+            set: function(value) {
+                window.solarSystem.update(value);
+            }
+        }
+    );
 
     camera.readState();
 }

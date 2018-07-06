@@ -1,4 +1,5 @@
 var shaders = require('./shaders.js');
+var earth, uniforms;
 var create = function() {
     return new Promise(function(resolve, reject) {
         const solar = new Promise( resolve => (new THREE.ObjectLoader()).load('models/solarSystem.json', object => resolve(object)));
@@ -38,7 +39,8 @@ var create = function() {
             shadowMapSize: new THREE.Vector2(0, 0),
             shadowRadius:1
         };
-        const uniforms = {
+
+        uniforms = {
             ambientLightColor: { value: new THREE.Vector3( 0.02, 0.02, 0.02) },
             pointLights: { value: [pointLights] },
 
@@ -54,16 +56,18 @@ var create = function() {
             emissive: { value: new THREE.Vector3( 0.55, 0.55, 0.55 ) },
             emissiveMap: { value: textureLoader.load( "textures/planets/earth-night-o2.png" ) }
         };
+
         const shaderMaterial = new THREE.ShaderMaterial({
             uniforms: uniforms,
             vertexShader: shaders.vs,
             fragmentShader: shaders.fs,
             transparent: true,
-            //lights: true
         });
 
+        console.info('shaders', shaders);
+
         var geometry = new THREE.IcosahedronBufferGeometry(0.2, 5);
-        var earth = new THREE.Mesh(geometry, shaderMaterial);
+        earth = new THREE.Mesh(geometry, shaderMaterial);
 
         var c = 24*60*60*1000
         var l = ((Math.PI*2)/c)*30
@@ -102,7 +106,17 @@ var create = function() {
     //     .then(model => model.addToScene());
 }
 
+function update(vs, fs) {
+    earth.material = new THREE.ShaderMaterial({
+        uniforms: uniforms,
+        vertexShader: vs || shaders.vs,
+        fragmentShader: fs || shaders.fs,
+        transparent: true,
+    });
+}
+
 //a little bit different way of doing it than the player module
 module.exports = {
     create: create,
+    update: update
 };
