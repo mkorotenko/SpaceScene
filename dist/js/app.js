@@ -67,6 +67,15 @@ function init() {
             }
         }
     );
+    Object.defineProperty(
+        shaders,
+        'newFs',
+        {
+            set: function(value) {
+                window.solarSystem.update(undefined, value);
+            }
+        }
+    );
 
     camera.readState();
 }
