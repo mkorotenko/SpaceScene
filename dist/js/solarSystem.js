@@ -41,7 +41,7 @@ var create = function() {
         };
 
         uniforms = {
-            ambientLightColor: { value: new THREE.Vector3( 0.02, 0.02, 0.02) },
+            ambientLightColor: { value: new THREE.Vector3( 0.1, 0.1, 0.1) },
             pointLights: { value: [pointLights] },
 
             lightPosition: { value: new THREE.Vector3(sunPosition.x,sunPosition.y,sunPosition.z) },
@@ -53,8 +53,8 @@ var create = function() {
             specularMap: { value: textureLoader.load( "textures/planets/earth_specularmap_flat_8192x4096.jpg" ) },
             normalMap: { value: textureLoader.load( "textures/planets/earth_normalmap_flat_8192x4096.jpg" ) },
             normalScale: { value: new THREE.Vector2( 0.85, 0.85 ) },
-            emissive: { value: new THREE.Vector3( 0.55, 0.55, 0.55 ) },
-            emissiveMap: { value: textureLoader.load( "textures/planets/earth-night-o2.png" ) }
+            emissive: { value: new THREE.Vector3( 0.95, 0.95, 0.95 ) },
+            emissiveMap: { value: textureLoader.load( "textures/planets/nightearth.gif" ) }
         };
 
         const shaderMaterial = new THREE.ShaderMaterial({
