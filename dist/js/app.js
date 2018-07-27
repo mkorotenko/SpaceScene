@@ -4,6 +4,8 @@ const nebula = require('./nebulaBox.js').create;
 const solarSystem = require('./solarSystem.js').create;
 const Raycaster = require('./raycaster.js').Raycaster;
 const InertialControl = require('./inertialControl.js').default;
+//const customScene = require('./customScene.js').default;
+import * as customScene from './customScene.js';
 
 var controls;
 var stats = new Stats();
@@ -36,6 +38,8 @@ function init() {
     })
     solarSystem().then(model => scene.add(raycaster.mesh = model));
     
+    new customScene(scene);
+
     container.appendChild( scene.renderer.domElement );
 
     container.appendChild( stats.dom );
@@ -57,6 +61,8 @@ function init() {
 
     window.get = get;
     window.solarSystem = require('./solarSystem.js');
+
+
     const shaders = window.shaders = require('./shaders.js');
     shaders.reset = function() {
         window.solarSystem.update();

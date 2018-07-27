@@ -43,7 +43,7 @@ var create = function() {
             emissiveMap: { value: textureLoader.load( "textures/planets/nightearth.gif" ) }
         };
 
-        const shaderMaterial = new THREE.ShaderMaterial({
+        const earthMaterial = new THREE.ShaderMaterial({
             uniforms: uniforms,
             vertexShader: shaders.vs,
             fragmentShader: shaders.fs,
@@ -53,7 +53,7 @@ var create = function() {
         console.info('shaders', shaders);
 
         var geometry = new THREE.IcosahedronBufferGeometry(0.2, 5);
-        earth = new THREE.Mesh(geometry, shaderMaterial);
+        earth = new THREE.Mesh(geometry, earthMaterial);
 
         var c = 24*60*60*1000
         var l = ((Math.PI*2)/c)*30
@@ -79,8 +79,7 @@ var create = function() {
             light.name = 'Sun light';
             group.add( light );
         
-            //group.add(models[0]);
-            group.add(earthGroup);
+            //group.add(earthGroup);
 
             group.name = 'Solar system group';
 
