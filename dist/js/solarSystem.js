@@ -6,18 +6,6 @@ var create = function() {
 
         var textureLoader = new THREE.TextureLoader();
         // planet
-        var materialNormal = new THREE.MeshPhongMaterial( {
-            specular: 0x333333,
-            shininess: 15,
-            map: textureLoader.load( "textures/planets/EarthMap.jpg" ),
-            specularMap: textureLoader.load( "textures/planets/earth_specularmap_flat_8192x4096.jpg" ),
-            normalMap: textureLoader.load( "textures/planets/earth_normalmap_flat_8192x4096.jpg" ),
-            normalScale: new THREE.Vector2( 0.85, 0.85 ),
-            //bumpMap: textureLoader.load( "textures/planets/Earth_Bump_map.jpg" ),
-            //bumpScale: 0.001,
-            //emissiveMap: textureLoader.load( "textures/planets/earth-night-o2.png" ),
-            transparent: true //to resolve artifacts cause by transparent Nebula
-        });
 
         const sunPosition = {
             x: -0.00015217743389729112, 
@@ -25,8 +13,6 @@ var create = function() {
             z: 0.0014427063671944287,
         };
 
-        // const m4 = new THREE.Matrix4();
-        // m4.set( 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 );
         const pointLights = {
             color: new THREE.Color(1.4, 1.4, 1.4),
             decay:0,
@@ -50,10 +36,10 @@ var create = function() {
             opacity: { value: 1.0 },
             map: { value: textureLoader.load( "textures/planets/EarthMap.jpg" ) },
             specular: { value: new THREE.Vector3( 0.2, 0.2, 0.2 ) },
-            specularMap: { value: textureLoader.load( "textures/planets/earth_specularmap_flat_8192x4096.jpg" ) },
+            specularMap: { value: textureLoader.load( "textures/planets/earth_specular_2048.jpg" ) },
             normalMap: { value: textureLoader.load( "textures/planets/earth_normalmap_flat_8192x4096.jpg" ) },
-            normalScale: { value: new THREE.Vector2( 0.85, 0.85 ) },
-            emissive: { value: new THREE.Vector3( 0.95, 0.95, 0.95 ) },
+            normalScale: { value: new THREE.Vector2( 0.25, 0.25 ) },
+            emissive: { value: new THREE.Vector3( 0.95, 0.95, 0.7 ) },
             emissiveMap: { value: textureLoader.load( "textures/planets/nightearth.gif" ) }
         };
 
